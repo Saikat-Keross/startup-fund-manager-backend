@@ -19,21 +19,30 @@ interface User {
 }; */
 
 export const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    try {
+        const { username, password } = req.body;
+        console.log(req.body);
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid username or password' });
+        }
 
-    // Check if the user exists and the password matches
-    if (username === user.username && await bcrypt.compare(password, user.password)) {
-        // Create a JWT token
-        const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
-        
-         // Send the token as a cookie
-         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-         
-        // Send the token to the client
-        res.json({ token });
-    } else {
-        res.status(401).json({ message: 'Invalid username or password' });
+        // Check if the user exists and the password matches
+        if (username === user.username && await bcrypt.compare(password, user.password)) {
+            // Create a JWT token
+            const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
+            
+            // Send the token as a cookie
+            res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+            
+            // Send the token to the client
+            res.json({ token });
+        } else {
+            res.status(401).json({ message: 'Invalid username or password' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
 

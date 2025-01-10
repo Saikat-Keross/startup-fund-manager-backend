@@ -10,6 +10,7 @@ import {
   deleteFundraiserHandler,
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
+import { createCheckoutSession } from './controller/stripe.checkout'
 
 function routes(app: Express) {
   app.get('/test', (req: Request, res: Response) => {
@@ -31,6 +32,8 @@ function routes(app: Express) {
   app.patch('/api/fundraiser/campaign/:id', updateFundraiserHandler);
 
   app.delete('/api/fundraiser/campaign/:id', deleteFundraiserHandler);
+
+  app.post('/api/fundraiser/campaign/checkout', createCheckoutSession);
 }
 
 export default routes;

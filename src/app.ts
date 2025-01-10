@@ -13,7 +13,7 @@ const corsOptions = {
   exposedHeaders: 'x-stripe-onboarding',
 };
 app.use(cors(corsOptions));
-console.log(process.env);
+//console.log(process.env);
 
 const port = process.env.PORT || 8000;
 
@@ -22,6 +22,6 @@ app.listen(port, async () => {
 
   await connect();
 
-  //routes(app);
+  routes(app);
   app.use('/auth', authRoutes);
 });
