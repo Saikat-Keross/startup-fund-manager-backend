@@ -1,6 +1,7 @@
 import express from 'express';
 //import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../controller/user.controller';
 import { UserController } from '../controller/user.controller';
+import { authAdminUser } from '../middleware/authUser';
 
 const router = express.Router();
 const userController = new UserController();
@@ -12,18 +13,18 @@ router.use((req: { method: any; originalUrl: any; }, res: any, next: () => void)
     next();
 });
 
-router.get('/users', userController.getAllUsers);
+router.get('/users',authAdminUser, userController.getAllUsers);
 
 // Get user by ID
-router.get('/users/:id', userController.getUser);
+router.get('/users/:id',authAdminUser, userController.getUser);
 
 // Create a new user
-router.post('/users', userController.createUser);
+router.post('/users',authAdminUser, userController.createUser);
 
 // Update an existing user
-router.put('/users/:id', userController.updateUser);
+router.put('/users/:id',authAdminUser, userController.updateUser);
 
 // Delete a user
-router.delete('/users/:id', userController.deleteUser);
+router.delete('/users/:id',authAdminUser, userController.deleteUser);
 
 export default router;

@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:20.16.0
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - .env
+    command: npm run dev

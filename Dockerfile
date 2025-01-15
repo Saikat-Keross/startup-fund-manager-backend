@@ -1,19 +1,25 @@
-FROM node:16.13.1-alpine3.12
+FROM node:20.16.0
+
+# Install build tools
+RUN apt-get update && apt-get install -y build-essential python3 && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
+# Install app dependencies
 RUN npm ci
 
 # Bundle app source
 COPY . .
 
-EXPOSE 4242
+# Set environment variable (ensure your app uses this)
+ENV PORT=3000
 
-CMD [ "yarn", "dev"]
+# Expose the port (Docker doesn't interpret variables here)
+EXPOSE 3000
 
+# Start the application
+CMD ["npm", "run", "dev"]
