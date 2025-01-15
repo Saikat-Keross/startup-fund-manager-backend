@@ -17,7 +17,7 @@ export interface UserDocument extends mongoose.Document {
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String},
    /*  isRoleApproved: { type: Boolean, default: false } */
     roles: { type: [String], enum: ['admin', 'user', 'investor', 'fundraiser'], default: ['user'] },
     companyName: { type: String, required: function (this: any) { return this.roles.includes('fundraiser'); } },
