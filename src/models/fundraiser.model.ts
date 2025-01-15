@@ -75,7 +75,23 @@ const fundraiserSchema = new mongoose.Schema({
   end_date: {
     type: Date,
     required: true,
-  }
+  },
+  approved: {
+    type: Boolean,
+    default: false,
+  },
+  apporvedBy: {
+    type: String,
+  },
+  approvedAt: {
+    type: Date,
+  },
+  rejectedBy: {
+    type: String,
+  },
+  rejectedAt: {
+    type: Date,
+  },
 });
 
 const Fundraiser = mongoose.model('Fundraiser', fundraiserSchema);

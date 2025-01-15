@@ -158,3 +158,14 @@ export async function deleteFundraiserHandler(req: Request, res: Response) {
     res.status(400).send(ex.message);
   }
 }
+
+export async function publishFundraiserHandler(req: Request, res: Response) {
+  let { id } = req.params;
+  try {
+    let fundraiser = await unpublishFundraiser(id);
+    return res.send(fundraiser);
+  } catch (ex: any) {
+    logger.error(ex);
+    res.status(400).send(ex.message);
+  }
+}

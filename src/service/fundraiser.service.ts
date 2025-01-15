@@ -65,9 +65,33 @@ export async function unpublishFundraiser(id: string) {
 
     fundraiser.published = !fundraiser.published;
 
+    try {
     fundraiser.save();
+    } catch (ex: any) {
+      throw new Error(ex);
+    }
     return fundraiser;
   } catch (ex: any) {
+    throw new Error(ex);
+  }
+}
+
+export async function publishFundraiser(id: string) {
+  try {
+    const fundraiser = await Fundraiser.findById(id);
+    
+    fundraiser.published = !fundraiser.published;
+    fundraiser.approved = true;
+    fundraiser.approvedOn = new Date();
+    fundraiser.approvedBy = "admin";
+    try {
+    fundraiser.save();
+    } catch (ex: any) {
+      throw new Error(ex);
+    }
+    return fundraiser;
+  }
+  catch (ex: any) {
     throw new Error(ex);
   }
 }

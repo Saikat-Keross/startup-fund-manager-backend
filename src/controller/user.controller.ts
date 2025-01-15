@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createUser,getUserById,updateUser,deleteUser, getAllUsers } from '../service/user.service';
+import { createUser,getUserById,updateUser,deleteUser, getAllUsers, getAllRoleRequests } from '../service/user.service';
 import bcrypt from 'bcrypt';
 
 export class UserController {
@@ -62,8 +62,19 @@ export class UserController {
     }
 
     public async getAllUsers(req: Request, res: Response): Promise<void> {
+        console.log("inside all users");
         try {
             const users = await getAllUsers();
+            res.status(200).json(users);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    public async getRoleRequests(req: Request, res: Response): Promise<void> {
+        console.log("inside role requests");
+        try {
+            const users = await getAllRoleRequests();
             res.status(200).json(users);
         } catch (error) {
             res.status(500).json({ message: error.message });
