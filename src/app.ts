@@ -60,7 +60,7 @@ app.use('/oauth',googleAuthRouter);
 app.listen(port, async () => {
   logger.info(`App is running in port ${port}`);
 
-  //await connect();
+  await connect();
 
   createDefaultAdmin();
 
