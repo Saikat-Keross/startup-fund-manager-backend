@@ -21,15 +21,15 @@ const app = express()
 
 app.use(cookieParser());
 
-//const CLIENT_ORIGIN = 'http://192.168.2.164:3000';
-// console.log("googleAuthrouter",googleAuthRouter)
+const CLIENT_ORIGIN = 'http://localhost:3000';
+ console.log("googleAuthrouter",googleAuthRouter)
 // console.log("authRoutes",authRoutes)
 
 
 app.use(express.json());
  const corsOptions = {
   exposedHeaders: 'x-stripe-onboarding',
-  //origin: [CLIENT_ORIGIN],
+  origin: [CLIENT_ORIGIN],
   credentials: true,
 };
 
@@ -60,7 +60,7 @@ app.use('/oauth',googleAuthRouter);
 app.listen(port, async () => {
   logger.info(`App is running in port ${port}`);
 
-  //await connect();
+  await connect();
 
   createDefaultAdmin();
 

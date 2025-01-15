@@ -1,6 +1,7 @@
 require("dotenv").config();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+import jwt from 'jsonwebtoken';
 
 import User from '../models/user.model'
 
@@ -13,7 +14,9 @@ module.exports = (passport) => {
         callbackURL: "http://localhost:8000/oauth/google/callback"
     },
         function (accessToken, refreshToken, profile, cb) {
-            User.findOne({ oauthId: profile.id }, async (err, user) => {
+            console.log("Profile", profile);
+            User.findOne({ _id: profile.id }, async (err, user) => {
+                console.log("user", user);
                 if (err) return cb(err);
                 if (!user) {
                     user = await User.create({
@@ -23,10 +26,10 @@ module.exports = (passport) => {
                         avatar: profile.photos[0].value
                     });
                 }
-
-                const token = jwt.sign({ id: user._id, username: user.username }, secretKey);
-                res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-                res.json({ token });
+                console.log("new user created", user);
+                // const token = jwt.sign({ id: user._id, username: user.username }, secretKey);
+                // res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+                // res.json({ token });
                 return cb(null, user);
             });
         }));
