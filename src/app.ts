@@ -9,11 +9,22 @@ import authRoutes from './routes/authRoutes';
 import user_routes from "./routes/user_routes";
 import { createDefaultAdmin } from './controller/createAdminUser';
 
-const app = express();
+const googleAuthRouter = require('./auth/google.route');
+
+const session = require('express-session');
+const passport = require('passport');
+require('./config/passport.config')(passport); // This loads the passport configuration
+
+
+
+const app = express()
 
 app.use(cookieParser());
 
 //const CLIENT_ORIGIN = 'http://192.168.2.164:3000';
+// console.log("googleAuthrouter",googleAuthRouter)
+// console.log("authRoutes",authRoutes)
+
 
 app.use(express.json());
  const corsOptions = {
@@ -35,19 +46,30 @@ app.use(cors(corsOptions));
 //console.log(process.env);
 
 const port = process.env.PORT || 8000;
+app.use(session({
+  secret: 'secret', 
+  resave: false,
+  saveUninitialized: true,
+}));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
+app.use('/oauth',googleAuthRouter);
 
 app.listen(port, async () => {
   logger.info(`App is running in port ${port}`);
 
-  await connect();
+  //await connect();
 
   createDefaultAdmin();
 
   routes(app);
+  // app.get("/", (req, res) => {
+  //   res.send("<a href='/auth/google'>Login with Google</a>");
+  // });
   app.use('/auth', authRoutes);
+
   app.use("/user",user_routes);
   //app.use("/profile",user_profile);
-
 });
