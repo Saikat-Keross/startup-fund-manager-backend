@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { createUser,getUserById,updateUser,deleteUser, getAllUsers, getAllRoleRequests } from '../service/user.service';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken'
 
 export class UserController {
    /*  private userService: UserService;
@@ -29,6 +30,28 @@ export class UserController {
                 res.status(200).json(user);
             } else {
                 res.status(404).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    public async getUserByJWT(req: Request, res: Response): Promise<void> {
+        try {
+            //const user = await getUserById(req.user.id);
+            const token = req.cookies.token;
+            console.log("token",token);
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            console.log("decoded",decoded);
+            const user = await getUserById(decoded.id);
+            let userPrincipal = {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+            console.log("userPrincipal",userPrincipal);
+            if (user) {
+                res.status(200).json(userPrincipal);
             }
         } catch (error) {
             res.status(500).json({ message: error.message });

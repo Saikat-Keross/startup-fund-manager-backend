@@ -15,6 +15,8 @@ router.post('/login', loginUser);
 //user logout
 router.post('/logout',authUser, logoutUser);
 
+router.get("/me",authUser, userController.getUserByJWT);
+
 router.post('/sendRequest',authUser, requestForRoleApproval);
 
 router.post('/roleRequestResponse',authAdminUser,responseForRoleApproval);
