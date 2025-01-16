@@ -27,4 +27,6 @@ router.put('/users/:id',authAdminUser, userController.updateUser);
 // Delete a user
 router.delete('/users/:id',authAdminUser, userController.deleteUser);
 
+router.post('/roleRequests',authAdminUser, userController.getRoleRequests);
+
 export default router;
