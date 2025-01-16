@@ -17,6 +17,8 @@ router.post('/logout',authUser, logoutUser);
 
 router.get("/me",authUser, userController.getUserByJWT);
 
+router.get("/roles",authUser, userController.geRolesForCurrentUser);
+
 router.post('/sendRequest',authUser, requestForRoleApproval);
 
 router.post('/roleRequestResponse',authAdminUser,responseForRoleApproval);

@@ -10,8 +10,29 @@ export async function createFundraiser(input: DocumentDefinition<FundraiserDocum
   }
 }
 
-export async function getFundraisers() {
+export async function getFundraiserOne(params : any) {
+
   try {
+    if (params) {
+      const fundraiser = await Fundraiser.findOne(params);
+      return fundraiser;
+    }
+    
+    const fundraiser = await Fundraiser.findOne();
+    return fundraiser;
+  } catch (ex: any) {
+    throw new Error(ex);
+  }
+}
+
+export async function getFundraisers(params : any) {
+
+  try {
+    if (params) {
+      const fundraisers = await Fundraiser.find(params);
+      return fundraisers;
+    }
+    
     const fundraisers = await Fundraiser.find();
     return fundraisers;
   } catch (ex: any) {

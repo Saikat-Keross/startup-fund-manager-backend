@@ -13,12 +13,6 @@ interface User {
     password: string;
 }
 
-// Dummy user for demonstration purposes
-/* const dummyUser: User = {
-    userId: '1',
-    username: 'testuser',
-    password: bcrypt.hashSync('password123', 10) // Hash the password
-}; */
 
 export const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -191,4 +185,6 @@ export const responseForRoleApproval = async (req : Request, res: Response) =>{
         })
     }
 }
+
+
 

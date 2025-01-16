@@ -7,6 +7,7 @@ import logger from './utils/logger';
 import routes from './routes';
 import authRoutes from './routes/authRoutes';
 import user_routes from "./routes/user_routes";
+import admin_routes from "./routes/admin_routes";
 import { createDefaultAdmin } from './controller/createAdminUser';
 
 const googleAuthRouter = require('./auth/google.route');
@@ -71,5 +72,7 @@ app.listen(port, async () => {
   app.use('/auth', authRoutes);
 
   app.use("/user",user_routes);
+
+  app.use("/admin",admin_routes);
   //app.use("/profile",user_profile);
 });

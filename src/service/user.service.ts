@@ -1,5 +1,6 @@
 import { DocumentDefinition } from 'mongoose';
 import User,{ UserDocument } from "../models/user.model";
+import UserRole from "../models/userRole.model";
 
 export async function createUser(input: DocumentDefinition<UserDocument>) {
   try {
@@ -67,4 +68,16 @@ export async function getAllUsers() {
         throw new Error(ex);
     }
 }
+
+export async function getAllRoleRequests() 
+{
+    try {
+        const roleRequests = await UserRole.find({approvalStatus : 'pending'});
+        return roleRequests;
+    } catch (ex: any) {
+        throw new Error(ex);
+    }
+
+}
+
 
