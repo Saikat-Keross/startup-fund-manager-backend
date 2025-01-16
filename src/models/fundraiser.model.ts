@@ -14,6 +14,12 @@ export interface FundraiserDocument extends mongoose.Document {
   stripeId?: string;
   contributions?: [ContributionDocument];
   faves?: string;
+  status?: string;
+  end_date: Date;
+  approved: boolean;
+  approvedBy?: string;
+  approvedAt?: Date;
+  approvedComments?: string;
 }
 
 const fundraiserSchema = new mongoose.Schema({
@@ -80,18 +86,24 @@ const fundraiserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  apporvedBy: {
+  approvedBy: {
     type: String,
   },
   approvedAt: {
     type: Date,
   },
-  rejectedBy: {
+  status: {
     type: String,
+    enum: ['pending', 'active', 'failed', 'completed'],
+    required: true,
+    default: 'pending',
   },
-  rejectedAt: {
-    type: Date,
-  },
+  approvedComments: {
+    type: String,
+    required: function (this: any) {
+      return this.status === 'failed';
+    },
+  }
 });
 
 const Fundraiser = mongoose.model('Fundraiser', fundraiserSchema);

@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import { createUser,getUserById,updateUser,deleteUser, getAllUsers, getAllRoleRequests } from '../service/user.service';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
+import User from '../models/user.model';
+
+const secretKey = process.env.JWT_SECRET;
 
 export class UserController {
    /*  private userService: UserService;
@@ -47,7 +50,8 @@ export class UserController {
             let userPrincipal = {
                 id: user._id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                roles: user.roles
             }
             console.log("userPrincipal",userPrincipal);
             if (user) {
@@ -101,6 +105,22 @@ export class UserController {
             res.status(200).json(users);
         } catch (error) {
             res.status(500).json({ message: error.message });
+        }
+    }
+
+    public async geRolesForCurrentUser(req: Request, res: Response): Promise<void>{
+        try{
+            const token = req.cookies.token;
+            const decoded = jwt.verify(token, secretKey as string);
+            const user = await User.findOne({ _id : decoded.id });
+            const roles = user.roles;
+            res.status(200).send({roles : roles});
+        }
+        catch(e){
+            console.log(e);
+             res.status(500).send({
+                error : 'Internal Server Error',
+            })
         }
     }
 }
