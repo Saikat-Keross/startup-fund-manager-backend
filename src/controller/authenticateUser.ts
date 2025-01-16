@@ -86,7 +86,7 @@ export const setUserRole = async (req: Request, res: Response) =>{
 
 export const requestForRoleApproval = async (req: Request, res: Response) =>{
     const { role,field_of_interest,industry,kyc_document,document_upload,investmentFocus,investmentAmount } = req.body;
-    console.log(req.body);
+    //console.log("body =>",req);
    
     try{
         //console.log(req);

@@ -4,7 +4,9 @@ import User from '../models/user.model';
 
 const authUser = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies?.token;
-    console.log(token);
+    const body = req.body;
+    console.log("body =>",body);
+    console.log("token =>",token);
 
     if (!token) {
         return res.status(401).send({ error: 'Access denied. No token provided.' });
@@ -60,6 +62,7 @@ const authAdminUser = async (req: Request, res: Response, next: NextFunction) =>
         if (!user.roles.includes('admin')) {
             return res.status(403).send({ error: 'Access denied.' });
         }
+        console.log("user authenticated")
     } catch (ex) {
         return res.status(400).send({ error: 'Invalid token.' });
     }
