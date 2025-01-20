@@ -63,7 +63,8 @@ app.listen(port, async () => {
   await connect();
 
   createDefaultAdmin();
-
+  ///
+  
   routes(app);
   // app.get("/", (req, res) => {
   //   res.send("<a href='/auth/google'>Login with Google</a>");
