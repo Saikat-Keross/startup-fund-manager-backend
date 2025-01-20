@@ -10,7 +10,9 @@ import {
   deleteFundraiserHandler,
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
-import { createCheckoutSession } from './controller/stripe.checkout'
+import { createCheckoutSession } from './controller/stripe.checkout';
+
+const verifyPayment = require('./controller/verifyPayment.controller');
 
 function routes(app: Express) {
   app.get('/test', (req: Request, res: Response) => {
@@ -33,7 +35,10 @@ function routes(app: Express) {
 
   app.delete('/api/fundraiser/campaign/:id', deleteFundraiserHandler);
 
-  app.post('/api/fundraiser/campaign/checkout', createCheckoutSession);
+  app.post('/api/fundraiser/campaign/checkout/:id', createCheckoutSession);
+
+  app.get('/payment-check',verifyPayment);
+
 }
 
 export default routes;
