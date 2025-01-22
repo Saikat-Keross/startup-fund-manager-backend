@@ -69,10 +69,9 @@ export const setUserRole = async (req: Request, res: Response) =>{
     const jwtToken = req.cookies.token;
     const decoded = jwt.verify(jwtToken, secretKey as string);
     const user = await User.findOne({ _id: decoded.id });
-    let roles = user.roles;
-    if(!roles.includes(role)){
-        roles.push(role);
-        user.roles = roles;
+    let current_role = user.role;
+    if(current_role != role){
+        user.role = role;
         user.save()
     }
   

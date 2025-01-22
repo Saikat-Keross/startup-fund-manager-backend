@@ -6,7 +6,7 @@ export interface UserDocument extends mongoose.Document {
     password: string;
     createdAt: Date;
     updatedAt: Date;
-    roles: string[];
+    role: string;
     companyName: string;
     gender: string;
     avatar: string;
@@ -19,8 +19,9 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String},
    /*  isRoleApproved: { type: Boolean, default: false } */
-    roles: { type: [String], enum: ['admin', 'user', 'investor', 'fundraiser'], default: ['user'] },
-    companyName: { type: String, required: function (this: any) { return this.roles.includes('fundraiser'); } },
+    //roles: { type: [String], enum: ['admin', 'user', 'investor', 'fundraiser'], default: ['user'] },
+    role: { type: String, enum: ['investor', 'fundraiser','admin','user'], required: true, default: 'user' },
+    companyName: { type: String, required: function (this: any) { return this.role == 'fundraiser'; } },
     userImage: { type: String },
     userDescription: { type: String },
     gender:{type: [String], enum: ['male','female','other']},

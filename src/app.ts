@@ -22,9 +22,10 @@ const app = express()
 
 app.use(cookieParser());
 
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://192.168.3.7:3000';
 // console.log("googleAuthrouter",googleAuthRouter)
 // console.log("authRoutes",authRoutes)
+console.log("client origin",CLIENT_ORIGIN);
 
 
 app.use(express.json());
@@ -32,7 +33,7 @@ app.use(express.json());
   exposedHeaders: 'x-stripe-onboarding',
   //allowedHeaders: '*', // Allow all headers
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'], // Allow specific headers
-  origin: [CLIENT_ORIGIN],
+  origin: [CLIENT_ORIGIN, 'http://localhost'],
   credentials: true,
 };
 

@@ -6,14 +6,14 @@ const createDefaultAdmin = async () => {
     const adminEmail = 'admin@example.com';
     const adminPassword = 'admin';
     
-    const existingAdmin = await User.findOne({ email: adminEmail, roles: { $in: ['admin'] } });
+    const existingAdmin = await User.findOne({ email: adminEmail, role: { $in: 'admin' } });
     if (!existingAdmin) {
       const hashedPassword = await bcrypt.hash(adminPassword, 10);
       const adminUser = new User({
         email: adminEmail,
         password: hashedPassword,
         username : 'admin',
-        roles: ['admin']
+        role: 'admin'
       });
       await adminUser.save();
       console.log('Default admin user created.');

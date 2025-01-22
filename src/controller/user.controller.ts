@@ -53,7 +53,7 @@ export class UserController {
                     id: user._id,
                     username: user.username,
                     email: user.email,
-                    roles: user.roles
+                    role: user.role
                 }
                 console.log("userPrincipal",userPrincipal);
                 if (user) {
@@ -137,8 +137,8 @@ export class UserController {
             const token = req.cookies.token;
             const decoded = jwt.verify(token, secretKey as string);
             const user = await User.findOne({ _id : decoded.id });
-            const roles = user.roles;
-            res.status(200).send({roles : roles});
+            const role = user.role;
+            res.status(200).send({role : role});
         }
         catch(e){
             console.log(e);
