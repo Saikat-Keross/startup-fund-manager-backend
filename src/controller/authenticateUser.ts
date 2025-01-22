@@ -29,7 +29,7 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
             const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
             
             // Send the token as a cookie
-            res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' , path: '/',  sameSite : 'none' ,maxAge: 3600000 });
+            res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' , path: '/',  sameSite : process.env.NODE_ENV === 'production' ? "none" : "lax" ,maxAge: 3600000 });
             //res.cookie('token', token, { secure: true , sameSite: 'none',  path: '/', maxAge: 3600000 });
             
             // Send the token to the client
@@ -69,10 +69,9 @@ export const setUserRole = async (req: Request, res: Response) =>{
     const jwtToken = req.cookies.token;
     const decoded = jwt.verify(jwtToken, secretKey as string);
     const user = await User.findOne({ _id: decoded.id });
-    let roles = user.roles;
-    if(!roles.includes(role)){
-        roles.push(role);
-        user.roles = roles;
+    let current_role = user.role;
+    if(current_role != role){
+        user.role = role;
         user.save()
     }
   

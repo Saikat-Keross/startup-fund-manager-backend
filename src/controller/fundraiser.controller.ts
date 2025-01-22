@@ -177,8 +177,9 @@ export async function publishFundraiserHandler(req: Request, res: Response) {
 
 export async function getFundraiserRequestsHandler(req: Request, res: Response) {
   try {
+    console.log("Inside getFundraiserRequestsHandler");
     let fundraisers = await getFundraisers({ status: 'pending' });
-    return res.send(fundraisers);
+    return res.status(200).send(fundraisers);
   } catch (ex: any) {
     logger.error(ex);
     res.status(400).send(ex.message);
