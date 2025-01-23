@@ -12,7 +12,7 @@ export interface FundraiserDocument extends mongoose.Document {
   published: boolean;
   owner: string;
   stripeId?: string;
-  contributions?: [ContributionDocument];
+  transactions?: string[];
   faves?: string;
   status?: string;
   end_date: Date;
@@ -71,9 +71,14 @@ const fundraiserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  contributions: {
-    type: [contributionSchema],
-  },
+  // contributions: {
+  //   type: [contributionSchema],
+  // },
+  transactions: [
+    {
+      type: String,
+    },
+  ],
   faves: {
     type: Number,
     default: 1,
