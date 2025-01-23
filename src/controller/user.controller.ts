@@ -3,6 +3,11 @@ import { createUser,getUserById,updateUser,deleteUser, getAllUsers, getAllRoleRe
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import User from '../models/user.model';
+import dispute from '../models/dispute.model';
+import { v4 as uuidv4 } from 'uuid';
+import multer from 'multer';
+import fs from 'fs';
+
 
 const secretKey = process.env.JWT_SECRET;
 
@@ -123,4 +128,62 @@ export class UserController {
             })
         }
     }
+
+    // ...existing code...
+    public async submitDispute(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.body.dispute) {
+                res.status(400).send({ message: 'Dispute is required' });
+                return ;
+            }
+            const { dispute } = req.body;
+            
+            const {resourceIds,dispputeid} = await this.uploadEvidence(req,res,()=>{});
+            console.log("resourceIds",resourceIds);
+                await dispute.create({ 
+                disputeId: dispputeid,
+                rasiedBy: req.user._id,  
+                disputeType:dispute.disputeType,
+                description: dispute.description,
+                status: 'pending',
+                evidences: resourceIds,
+                createdAt: Date.now(),
+                resolvedAt: null,
+                resolvedBy: null,
+                comments: null,
+            });
+            res.status(201).send({ message: 'Dispute submitted successfully' });
+        } catch (error) {
+            res.status(500).send({ error: (error as Error).message });
+        }
+    }
+    public async uploadEvidence(req : Request, res: Response,next:Function): Promise<{resourceIds: string[], dispputeid: string}>{
+        //uploaded files
+        const resourceIds: void | string[] | PromiseLike<void> = []
+        const dispputeid = uuidv4(); 
+        //creating evidence-paths
+        const path = `./dispute-evidences/dispute_evidence${dispputeid}`;
+        if (!fs.existsSync(path)) {
+            fs.mkdirSync(path);
+          }
+          //end creatinbg evidence-paths
+        const storage = multer.diskStorage({
+            destination: function (req: any, file: any, cb: (arg0: null, arg1: string) => void) {
+              cb(null, path)
+            },
+            filename: function (req: any, file: { fieldname: string; }, cb: (arg0: null, arg1: string) => void) {
+              const uniqueSuffix = uuidv4();
+              resourceIds.push(uniqueSuffix) //pushing resoiurce ids
+              cb(null, file.fieldname + '-' + uniqueSuffix)
+            }
+          })
+          
+          const upload = multer({ storage: storage })
+            await upload.array('evidence', 10);
+          return {resourceIds,dispputeid};
+          //end uploaded files
+    }
+// ...existing code...
 }
+
+

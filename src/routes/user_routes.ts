@@ -1,7 +1,7 @@
 import express from 'express';
 //import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../controller/user.controller';
 import { UserController } from '../controller/user.controller';
-import { authAdminUser } from '../middleware/authUser';
+import { authUser,authAdminUser } from '../middleware/authUser';
 
 const router = express.Router();
 const userController = new UserController();
@@ -28,5 +28,8 @@ router.put('/users/:id',authAdminUser, userController.updateUser);
 router.delete('/users/:id',authAdminUser, userController.deleteUser);
 
 router.post('/roleRequests',authAdminUser, userController.getRoleRequests);
+
+
+router.post('/submitDispute',authUser,userController.submitDispute );
 
 export default router;
