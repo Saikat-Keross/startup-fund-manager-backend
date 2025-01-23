@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createUser,getUserById,updateUser,deleteUser, getAllUsers, getAllRoleRequests } from '../service/user.service';
+import { createUser,getUserById,updateUser,deleteUser, getAllUsers, getAllRoleRequests, getRoleRequest } from '../service/user.service';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import User from '../models/user.model';
@@ -47,20 +47,29 @@ export class UserController {
     public async getUserByJWT(req: Request, res: Response): Promise<void> {
         try {
             //const user = await getUserById(req.user.id);
-            const token = req.cookies.token;
-            console.log("token",token);
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            console.log("decoded",decoded);
-            const user = await getUserById(decoded.id);
-            let userPrincipal = {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                roles: user.roles
+            console.log("Inside getUserByJWT");
+            if(req.cookies.token){
+                const token = req.cookies.token;
+                console.log("token",token);
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                console.log("decoded",decoded);
+                const user = await getUserById(decoded.id);
+                let userPrincipal = {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role
+                }
+                console.log("userPrincipal",userPrincipal);
+                if (user) {
+                    res.status(200).json(userPrincipal);
+                }
+                else {
+                    res.status(201).json({ message: 'User not found' });
+                }
             }
-            console.log("userPrincipal",userPrincipal);
-            if (user) {
-                res.status(200).json(userPrincipal);
+            else {
+                res.status(201).json({ message: 'User not found' });
             }
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -113,13 +122,28 @@ export class UserController {
         }
     }
 
+    public async getRoleRequest(req: Request, res: Response): Promise<void> {
+        console.log("inside role request");
+        try {
+            const token = req.cookies.token;
+            console.log("token",token);
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            console.log("decoded",decoded);
+            //const role = await getRoleRequest(decoded.id);
+            const roleObj = await getRoleRequest(req.params.id);
+            res.status(200).json(roleObj);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
     public async geRolesForCurrentUser(req: Request, res: Response): Promise<void>{
         try{
             const token = req.cookies.token;
             const decoded = jwt.verify(token, secretKey as string);
             const user = await User.findOne({ _id : decoded.id });
-            const roles = user.roles;
-            res.status(200).send({roles : roles});
+            const role = user.role;
+            res.status(200).send({role : role});
         }
         catch(e){
             console.log(e);

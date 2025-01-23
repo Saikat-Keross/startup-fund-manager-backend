@@ -53,13 +53,14 @@ const authAdminUser = async (req: Request, res: Response, next: NextFunction) =>
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
        // let userId = decoded.id;
+       console.log(decoded);
         let user = await User.findOne({ _id : decoded.id});
         console.log(user);
         if (!user) {
             return res.status(400).send({ error: 'Invalid token.' });
         }
 
-        if (!user.roles.includes('admin')) {
+        if (user.role !='admin') {
             return res.status(403).send({ error: 'Access denied.' });
         }
         console.log("user authenticated")

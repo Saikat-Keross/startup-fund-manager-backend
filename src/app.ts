@@ -22,15 +22,16 @@ const app = express()
 
 app.use(cookieParser());
 
-const CLIENT_ORIGIN = 'http://localhost:3000';
- console.log("googleAuthrouter",googleAuthRouter)
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://192.168.3.7:3000';
+// console.log("googleAuthrouter",googleAuthRouter)
 // console.log("authRoutes",authRoutes)
+console.log("client origin",CLIENT_ORIGIN);
 
 
 app.use(express.json());
  const corsOptions = {
   exposedHeaders: 'x-stripe-onboarding',
-  origin: [CLIENT_ORIGIN],
+  //origin: [CLIENT_ORIGIN],
   credentials: true,
 };
 
@@ -64,7 +65,8 @@ app.listen(port, async () => {
   await connect();
 
   createDefaultAdmin();
-
+  ///
+  
   routes(app);
   // app.get("/", (req, res) => {
   //   res.send("<a href='/auth/google'>Login with Google</a>");

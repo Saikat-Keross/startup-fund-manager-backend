@@ -15,9 +15,11 @@ router.post('/login', loginUser);
 //user logout
 router.post('/logout',authUser, logoutUser);
 
-router.get("/me",authUser, userController.getUserByJWT);
+router.get("/me", userController.getUserByJWT);
 
 router.get("/roles",authUser, userController.geRolesForCurrentUser);
+
+router.get('/roleRequest',authUser, userController.getRoleRequest);
 
 router.post('/sendRequest',authUser, requestForRoleApproval);
 

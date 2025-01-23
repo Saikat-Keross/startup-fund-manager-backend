@@ -27,7 +27,6 @@ module.exports = (passport) => {
             } else {
                 console.log("User already exists:", user);
             }
-
             return cb(null, user);
         } catch (error) {
             console.error("Error during Google authentication:", error);

@@ -25,6 +25,10 @@ export const contributionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  transactionId:{
+    type: String,
+    required: false,
+  }
 });
 
 const Contribution = mongoose.model('Contribution', contributionSchema);
