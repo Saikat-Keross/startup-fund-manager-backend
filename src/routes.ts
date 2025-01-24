@@ -19,6 +19,8 @@ import { authUserFromCookie } from './middleware/authUser'
 
 import createRefund from './controller/refund.controller';
 
+import getTransactionsByUserId from './controller/getTransaction.controller'
+
 function routes(app: Express) {
   app.get('/test', (req: Request, res: Response) => {
     res.sendStatus(200);
@@ -45,6 +47,9 @@ function routes(app: Express) {
   app.get('/payment-check',authUserFromCookie, verifyPayment);
 
   app.post('/api/refund',createRefund)
+
+
+  app.get('/api/transactions/user/:userId', getTransactionsByUserId);
 
 }
 
