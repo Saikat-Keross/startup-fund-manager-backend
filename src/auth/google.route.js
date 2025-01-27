@@ -23,7 +23,7 @@ router.get('/profile', (req, res) => {
         const token = jwt.sign({ id: user._id, username: user.username }, secretKey);
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
         //res.json({ token });
-        res.redirect('http://localhost:3000/');
+        res.redirect('http://localhost:8000/');
     } else {
         res.redirect('/oauth/profile');
     }

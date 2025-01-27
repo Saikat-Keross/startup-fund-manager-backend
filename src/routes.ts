@@ -12,7 +12,14 @@ import {
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
 
-const verifyPayment = require('./controller/verifyPayment.controller');
+//const verifyPayment = require('./controller/verifyPayment.controller');
+
+import verifyPayment from './controller/verifyPayment.controller';
+import { authUserFromCookie } from './middleware/authUser'
+
+import createRefund from './controller/refund.controller';
+
+import getTransactionsByUserId from './controller/getTransaction.controller'
 
 function routes(app: Express) {
   app.get('/test', (req: Request, res: Response) => {
@@ -37,7 +44,12 @@ function routes(app: Express) {
 
   app.post('/api/fundraiser/campaign/checkout/:id', createCheckoutSession);
 
-  app.get('/payment-check',verifyPayment);
+  app.get('/payment-check',authUserFromCookie, verifyPayment);
+
+  app.post('/api/refund',createRefund)
+
+
+  app.get('/api/transactions/user/:userId', getTransactionsByUserId);
 
 }
 

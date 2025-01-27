@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'
 import User from '../models/user.model';
 
 const authUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -28,7 +28,7 @@ const authUser = async (req: Request, res: Response, next: NextFunction) => {
 //export default authUser;
 const authUserFromCookie = (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies?.token;
-
+    console.log("token",token);
     if (!token) {
         return res.status(401).send({ error: 'Access denied. No token provided.' });
     }
