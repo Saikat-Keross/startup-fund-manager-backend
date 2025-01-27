@@ -24,6 +24,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pino": "^7.5.0",
     "pino-pretty": "^7.2.0",
+    "resend": "^4.1.1",
     "stripe": "^8.222.0",
     "zod": "^3.11.6"
   },

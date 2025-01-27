@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import logger from './logger';
 
 async function connect() {
+  //console.log('Connecting',process.env.DB_URI);
   const dbUri = process.env.DB_URI;
 
   try {
