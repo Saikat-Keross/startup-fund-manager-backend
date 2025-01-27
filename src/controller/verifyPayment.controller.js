@@ -86,6 +86,7 @@ async function verifyPayment(req, res) {
                 });
                 console.log('transaction', transaction);
                 // Now update the corresponding Fundraiser
+                console.log()
                 const fundraiser = await Fundraiser.findById(transaction?.fundraiserId);
                 if (!fundraiser) throw new Error('Fundraiser not found');
             
