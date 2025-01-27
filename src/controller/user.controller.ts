@@ -53,7 +53,8 @@ export class UserController {
                     id: user._id,
                     username: user.username,
                     email: user.email,
-                    role: user.role
+                    role: user.role,
+                    country: user.country,
                 }
                 console.log("userPrincipal",userPrincipal);
                 if (user) {

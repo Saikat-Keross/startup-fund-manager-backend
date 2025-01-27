@@ -8,6 +8,8 @@ import routes from './routes';
 import authRoutes from './routes/authRoutes';
 import user_routes from "./routes/user_routes";
 import admin_routes from "./routes/admin_routes";
+import kyc_routes from "./routes/kyc.routes";
+
 import { createDefaultAdmin } from './controller/createAdminUser';
 
 const googleAuthRouter = require('./auth/google.route');
@@ -78,5 +80,7 @@ app.listen(port, async () => {
   app.use("/user",user_routes);
 
   app.use("/admin",admin_routes);
+
+  app.use("/kyc",kyc_routes);
   //app.use("/profile",user_profile);
 });
