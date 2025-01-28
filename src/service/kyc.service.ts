@@ -6,6 +6,7 @@ export class KYCService {
     public async createKYC(data: Partial<KYC>): Promise<KYC> {
         const newKYC: KYC = {
             id: this.generateId(),
+            userId: data.userId,
             ...data,
             createdAt: new Date(),
             updatedAt: new Date(),

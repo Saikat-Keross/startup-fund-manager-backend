@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { KYCService } from '../service/kyc/kyc.service';
 import { KYCDocument } from '../service/kyc/kyc.factory';
+import jwt from 'jsonwebtoken';
+import User from '../models/user.model';
 
 export class KYCController {
     private kycService: KYCService;
@@ -12,6 +14,13 @@ export class KYCController {
     public createKYC = async (req: Request, res: Response): Promise<void> => {
         console.log("Inside createKYC");
         try {
+            let decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+            let user = await User.findById(decoded.id);
+            if(!user){
+                res.status(404).json({ message: 'User not found' });
+                return;
+            }
+
             const { country, ...data } = req.body;
 
             console.log("Country =>", country);
@@ -30,6 +39,7 @@ export class KYCController {
                 });
                 return;
             }
+            data.userId = user._id;
 
             const result = await this.kycService.createKYC(country, data);
             res.status(201).json(result);

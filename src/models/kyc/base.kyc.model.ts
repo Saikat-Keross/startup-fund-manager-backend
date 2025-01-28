@@ -1,6 +1,7 @@
 import { Schema, model, Document } from 'mongoose';
 
 export interface IBaseKYC extends Document {
+    userId: Schema.Types.ObjectId;
     country: string;  // Discriminator field for the model type
     firstName: string;
     lastName: string;
@@ -23,6 +24,7 @@ export interface IBaseKYC extends Document {
 
 const BaseKYCSchema = new Schema<IBaseKYC>(
     {
+        userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         country: { type: String, required: true },  // Discriminator field
         firstName: { type: String, required: true },
         lastName: { type: String, required: true },
