@@ -21,6 +21,10 @@ import createCampaignRefund from './controller/refund.controller';
 
 import getTransactionsByUserId from './controller/getTransaction.controller'
 import getAllTransactions from './controller/allTransactions.controller';
+import { createStripeAccount } from './controller/stripeAccount.controller';
+import createOnboardingLink from './controller/stripeOnboard.controller';
+
+
 
 function routes(app: Express) {
   app.get('/test', (req: Request, res: Response) => {
@@ -54,6 +58,9 @@ function routes(app: Express) {
 
   app.get('/api/transactions',getAllTransactions)
 
+  app.post('/api/payment/account/:campaignId',createStripeAccount)
+
+  app.post('/api/account/onboard',createOnboardingLink)
 }
 
 export default routes;

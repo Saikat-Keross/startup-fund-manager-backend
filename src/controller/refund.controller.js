@@ -127,7 +127,7 @@ import Fundraiser from '../models/fundraiser.model';
 import User from '../models/user.model';
 import jwt from 'jsonwebtoken'
 
-import sendRefundEmail from '../utils/sendEmail'
+import sendRefundEmail from '../utils/sendrefundEmail'
 export default async function createCampaignRefund(req, res) {
     try {
         const { campaignid } = req.params;
