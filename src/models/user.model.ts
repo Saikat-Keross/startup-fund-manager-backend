@@ -10,6 +10,7 @@ export interface UserDocument extends mongoose.Document {
     companyName: string;
     gender: string;
     avatar: string;
+    country: string;
     //roles: { type: [String], enum: ['admin', 'user', 'investor','fundraiser'], default: ['user'] },
     //isRoleApproved: boolean;
 }
@@ -37,6 +38,7 @@ const UserSchema = new mongoose.Schema({
             }
         }
     },
+    country: { type: String , default: 'us', required: function (this: any) { return this.role !== 'admin'; } },
    // isRoleApproved: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
