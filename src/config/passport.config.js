@@ -1,6 +1,8 @@
 require("dotenv").config();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+import jwt from 'jsonwebtoken';
+
 import User from '../models/user.model'
 module.exports = (passport) => {
     passport.use(new GoogleStrategy({

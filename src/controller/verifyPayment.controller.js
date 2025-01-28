@@ -27,7 +27,8 @@
 
 const stripe = require('stripe')(process.env.STRIPE_SECRECT_KEY);
 
-import Contribution from '../models/contribution.model';
+//import Contribution from '../models/contribution.model';
+import Transaction from '../models/transaction.model';
 import Fundraiser from '../models/fundraiser.model';
 
 
@@ -43,6 +44,8 @@ let ratesCacheOptions = {
 currencyConverter = currencyConverter.setupRatesCache(ratesCacheOptions)
 
 async function verifyPayment(req, res) {
+    const userId = req?.user?.id
+    console.log('userId',req.user);
     const { session_id, campaign_id } = req.query;
     console.log('session_id', session_id);
     console.log('campaign_id', campaign_id);
@@ -51,19 +54,19 @@ async function verifyPayment(req, res) {
     }
 
 
-    async function convertCurrency(amount, currency) {
-        if (currency.toLowerCase() === 'usd') {
-            return amount / 100; // Convert cents to dollars if USD
-        } else {
-            try {
-                const convertedAmount = await currencyConverter.convert(amount, currency.toUpperCase(), 'USD');
-                return convertedAmount; // Assuming the library directly returns the converted amount in USD
-            } catch (error) {
-                console.error('Error converting currency:', error);
-                throw new Error(`Failed to convert currency from ${currency} to USD: ${error.message}`);
-            }
-        }
-    }
+    // async function convertCurrency(amount, currency) {
+    //     if (currency.toLowerCase() === 'usd') {
+    //         return amount / 100; // Convert cents to dollars if USD
+    //     } else {
+    //         try {
+    //             const convertedAmount = await currencyConverter.convert(amount, currency.toUpperCase(), 'USD');
+    //             return convertedAmount; // Assuming the library directly returns the converted amount in USD
+    //         } catch (error) {
+    //             console.error('Error converting currency:', error);
+    //             throw new Error(`Failed to convert currency from ${currency} to USD: ${error.message}`);
+    //         }
+    //     }
+    // }
     
 
     try {
@@ -72,24 +75,26 @@ async function verifyPayment(req, res) {
         console.log('paymentIntent', paymentIntent);
         switch (paymentIntent.status) {
             case 'succeeded':
-               // const amountInUSD = await convertCurrency(paymentIntent.amount, paymentIntent.currency);
-                const contribution = await Contribution.create({
+                const transaction = await Transaction.create({
                     amount: paymentIntent.amount,
                     fundraiserId: campaign_id,
                     date: new Date(),
-                    transactionId: paymentIntent.id
+                    transactionId: paymentIntent.id,
+                    status:"succeeded",
+                    userId:userId,
+                    currency:paymentIntent.currency
                 });
-
+                console.log('transaction', transaction);
                 // Now update the corresponding Fundraiser
-                const fundraiser = await Fundraiser.findById(campaign_id);
-                if (!fundraiser) {
-                    return res.status(404).send("Fundraiser not found");
-                }
-                fundraiser.contributions.push(contribution); 
-                fundraiser.current_amount += contribution.amount;
+                console.log()
+                const fundraiser = await Fundraiser.findById(transaction?.fundraiserId);
+                if (!fundraiser) throw new Error('Fundraiser not found');
+            
+                fundraiser.current_amount += transaction.amount;
+                fundraiser.transactions.push(transaction.transactionId);
                 await fundraiser.save();
 
-                res.send("Thank you for your payment!");
+                res.json({fundraiser});
 
                 break;
             case 'requires_action':
@@ -127,4 +132,4 @@ async function verifyPayment(req, res) {
     }
 }
 
-module.exports = verifyPayment;
+export default verifyPayment;

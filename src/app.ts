@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
+import bodyParser from 'body-parser';
 const cors = require('cors');
 import connect from './utils/connect';
 import logger from './utils/logger';
@@ -11,6 +12,7 @@ import admin_routes from "./routes/admin_routes";
 import kyc_routes from "./routes/kyc.routes";
 
 import { createDefaultAdmin } from './controller/createAdminUser';
+import path from 'path';
 
 const googleAuthRouter = require('./auth/google.route');
 
@@ -24,18 +26,18 @@ const app = express()
 
 app.use(cookieParser());
 
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://192.168.3.7:3000';
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
 // console.log("googleAuthrouter",googleAuthRouter)
 // console.log("authRoutes",authRoutes)
 console.log("client origin",CLIENT_ORIGIN);
 
 
 app.use(express.json());
+//app.use(bodyParser.urlencoded({ extended: true })); //to parse formdata
+
  const corsOptions = {
   exposedHeaders: 'x-stripe-onboarding',
-  //allowedHeaders: '*', // Allow all headers
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'], // Allow specific headers
-  origin: [CLIENT_ORIGIN, 'http://localhost'],
+  origin: [CLIENT_ORIGIN],
   credentials: true,
 };
 
@@ -57,6 +59,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
