@@ -32,7 +32,7 @@ function routes(app: Express) {
     res.sendStatus(200);
   });
 
-  app.post('/api/fundraiser', validate(createFundraiserSchema), createFundraiserHandler);
+  app.post('/api/fundraiser', validate(createFundraiserSchema),authUserFromCookie, createFundraiserHandler);
 
   app.get('/api/fundraiser', getFundraisersHandler);
 
