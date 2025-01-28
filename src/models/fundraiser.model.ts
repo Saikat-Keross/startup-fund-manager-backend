@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { contributionSchema, ContributionDocument } from '../models/contribution.model';
-const { ObjectId } = require("mongodb");
+//const UserRole = require('./userRole.model');
+import User from './user.model';
 
 export interface FundraiserDocument extends mongoose.Document {
   title: string;
@@ -25,6 +26,11 @@ export interface FundraiserDocument extends mongoose.Document {
 }
 
 const fundraiserSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -114,6 +120,25 @@ const fundraiserSchema = new mongoose.Schema({
     required: function (this: any) {
       return this.status === 'failed';
     },
+  }
+});
+
+
+fundraiserSchema.pre('save', async function (next) { 
+  try {
+    console.log("this.userId:", this.userId); 
+    if (!this.userId) {
+      return next(new Error('User ID is missing.'));
+    }
+
+    const user = await User.findById(this.userId);  
+    if (!user || user.role !== 'fundraiser') { 
+      return next(new Error('Only users with the "fundraiser" role can create a fundraiser.'));
+    }
+
+    next();
+  } catch (error) {
+    next(error);
   }
 });
 

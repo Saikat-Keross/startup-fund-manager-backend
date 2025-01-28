@@ -18,9 +18,14 @@ import { createCheckoutSession } from './controller/stripe.checkout';
 import verifyPayment from './controller/verifyPayment.controller';
 import { authUserFromCookie } from './middleware/authUser'
 
-import createRefund from './controller/refund.controller';
+import createCampaignRefund from './controller/refund.controller';
 
 import getTransactionsByUserId from './controller/getTransaction.controller'
+import getAllTransactions from './controller/allTransactions.controller';
+import { createStripeAccount } from './controller/stripeAccount.controller';
+import createOnboardingLink from './controller/stripeOnboard.controller';
+
+
 
 function routes(app: Express) {
   app.get('/test', (req: Request, res: Response) => {
@@ -49,12 +54,17 @@ function routes(app: Express) {
 
   app.get('/payment-check',authUserFromCookie, verifyPayment);
 
-  app.post('/api/refund',createRefund)
+  app.post('/api/refund/:campaignid',authUserFromCookie,createCampaignRefund)
 
 
   app.get('/api/transactions/user/:userId', getTransactionsByUserId);
   
 
+  app.get('/api/transactions',getAllTransactions)
+
+  app.post('/api/payment/account/:campaignId',createStripeAccount)
+
+  app.post('/api/account/onboard',createOnboardingLink)
 }
 
 export default routes;

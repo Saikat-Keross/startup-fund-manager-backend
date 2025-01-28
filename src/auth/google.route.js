@@ -20,10 +20,11 @@ router.get('/profile', (req, res) => {
 
     if (req.isAuthenticated()) {
         let user = req?.user;
-        const token = jwt.sign({ id: user._id, username: user.username }, secretKey);
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-        //res.json({ token });
-        res.redirect('http://localhost:8000/');
+        
+        const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' , path: '/',  sameSite : process.env.NODE_ENV === 'production' ? "none" : "lax" ,maxAge: 3600000 });
+        res.json({ token });
+        //res.redirect('http://localhost:8000/');
     } else {
         res.redirect('/oauth/profile');
     }
