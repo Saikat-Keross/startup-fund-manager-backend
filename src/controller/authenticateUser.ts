@@ -16,6 +16,7 @@ interface User {
 
 export const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log("inside login")
         const { username, password } = req.body;
         console.log("body => ",req.body);
         const user = await User.findOne({ username });
@@ -27,7 +28,8 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
         if (username === user.username && await bcrypt.compare(password, user.password)) {
             // Create a JWT token
             const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
-            
+            req.user  = user ;
+            console.log("user =>",user);
             // Send the token as a cookie
             res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' , path: '/',  sameSite : process.env.NODE_ENV === 'production' ? "none" : "lax" ,maxAge: 3600000 });
             //res.cookie('token', token, { secure: true , sameSite: 'none',  path: '/', maxAge: 3600000 });
@@ -79,7 +81,7 @@ export const setUserRole = async (req: Request, res: Response) =>{
 
 export const requestForRoleApproval = async (req: Request, res: Response) =>{
     const { role,field_of_interest,industry,kyc_document,document_upload,investmentFocus,investmentAmount } = req.body;
-    console.log(req.body);
+    //console.log("body =>",req);
    
     try{
         //console.log(req);
