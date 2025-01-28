@@ -8,6 +8,7 @@ import {
   postFavesHandler,
   updateFundraiserHandler,
   deleteFundraiserHandler,
+  submitForApprovalHandler
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
@@ -30,6 +31,8 @@ function routes(app: Express) {
 
   app.get('/api/fundraiser', getFundraisersHandler);
 
+  app.post('/api/fundraiser/submitForApproval', submitForApprovalHandler);
+
   app.get('/api/fundraiser/campaign/:id', getFundraiserByIdHandler);
 
   app.post('/api/fundraiser/campaign/faves/:id', postFavesHandler);
@@ -50,6 +53,7 @@ function routes(app: Express) {
 
 
   app.get('/api/transactions/user/:userId', getTransactionsByUserId);
+  
 
 }
 
