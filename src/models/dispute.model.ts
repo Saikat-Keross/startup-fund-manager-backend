@@ -6,13 +6,13 @@ const disputeSchema = new mongoose.Schema({
         required: true,
     },
     rasiedBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,//mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
     disputeType: {
         type: String,
-        enum: ['fraud', 'misrepresentation', 'other'],
+        enum: ['fraud', 'mis representation', 'scope disagreement','quality concerns','technical issues','other'],
         required: true,
     },
     description: {
@@ -21,12 +21,17 @@ const disputeSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'resolved'],
-        default: 'pending',
+        enum: ['Under Review', 'Resolved'],
+        default: 'Under Review',
     },
-    evidences: {
-        type: [String],
-        required: true,
+    // evidences: {
+    //     type: [String],
+    //     required: true,
+    // },
+    adminQueries:{
+        type:[Object],
+        default:[],
+
     },
     createdAt: {
         type: Date,

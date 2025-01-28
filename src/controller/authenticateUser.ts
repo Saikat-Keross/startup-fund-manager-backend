@@ -16,6 +16,7 @@ interface User {
 
 export const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log("inside login")
         const { username, password } = req.body;
         console.log("body => ",req.body);
         const user = await User.findOne({ username });
