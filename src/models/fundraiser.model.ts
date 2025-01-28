@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { contributionSchema, ContributionDocument } from '../models/contribution.model';
+//const UserRole = require('./userRole.model');
+import User from './user.model';
 
 export interface FundraiserDocument extends mongoose.Document {
   title: string;
@@ -12,7 +14,7 @@ export interface FundraiserDocument extends mongoose.Document {
   published: boolean;
   owner: string;
   stripeId?: string;
-  contributions?: [ContributionDocument];
+  transactions?: string[];
   faves?: string;
   status?: string;
   end_date: Date;
@@ -20,14 +22,24 @@ export interface FundraiserDocument extends mongoose.Document {
   approvedBy?: string;
   approvedAt?: Date;
   approvedComments?: string;
+  draftId: string;
 }
 
 const fundraiserSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   title: {
     type: String,
     required: true,
     minLength: 10,
     maxLength: 255,
+  },
+  draftId:{
+    type: String,
+    required: true
   },
   story: {
     type: String,
@@ -71,9 +83,14 @@ const fundraiserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  contributions: {
-    type: [contributionSchema],
-  },
+  // contributions: {
+  //   type: [contributionSchema],
+  // },
+  transactions: [
+    {
+      type: String,
+    },
+  ],
   faves: {
     type: Number,
     default: 1,
@@ -94,7 +111,7 @@ const fundraiserSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'active', 'failed', 'completed'],
+    enum: ['pending', 'active', 'failed', 'approved'],
     required: true,
     default: 'pending',
   },
@@ -103,6 +120,25 @@ const fundraiserSchema = new mongoose.Schema({
     required: function (this: any) {
       return this.status === 'failed';
     },
+  }
+});
+
+
+fundraiserSchema.pre('save', async function (next) { 
+  try {
+    console.log("this.userId:", this.userId); 
+    if (!this.userId) {
+      return next(new Error('User ID is missing.'));
+    }
+
+    const user = await User.findById(this.userId);  
+    if (!user || user.role !== 'fundraiser') { 
+      return next(new Error('Only users with the "fundraiser" role can create a fundraiser.'));
+    }
+
+    next();
+  } catch (error) {
+    next(error);
   }
 });
 
