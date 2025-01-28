@@ -3,6 +3,11 @@ import { createUser,getUserById,updateUser,deleteUser, getAllUsers, getAllRoleRe
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import User from '../models/user.model';
+import dispute from '../models/dispute.model';
+
+import multer from 'multer';
+import fs from 'fs';
+
 
 const secretKey = process.env.JWT_SECRET;
 
@@ -53,7 +58,8 @@ export class UserController {
                     id: user._id,
                     username: user.username,
                     email: user.email,
-                    role: user.role
+                    role: user.role,
+                    country: user.country,
                 }
                 console.log("userPrincipal",userPrincipal);
                 if (user) {
@@ -147,4 +153,65 @@ export class UserController {
             })
         }
     }
+
+    // ...existing code...
+    public async submitDispute(req: Request, res: Response): Promise<void> {
+        console.log(req.body)
+       const {disputeId,disputeType,description} = req.body
+        try {
+           
+                await dispute.create({ 
+                disputeId: disputeId,
+                rasiedBy: req.user?._id || "ADMIN",  
+                disputeType:disputeType,
+                description: description,
+                
+                
+                createdAt: Date.now(),
+                resolvedAt: null,
+                resolvedBy: null,
+                comments: null,
+            });
+            console.log('success')
+            res.status(201).send({ message: 'Dispute submitted successfully' });
+        } catch (error) {
+            console.log('error: '+(error as Error).message)
+            res.status(500).send({ error: (error as Error).message });
+        }
+    }
+    
+    // public async createDirectory(req : Request, res: Response,next:Function):Promise<void>{
+    //     console.log("while creating directory :" )
+    //     console.log(req.body)
+    //     const disputeid = uuidv4(); 
+        
+    //     //const path = `./uploads/dispute-evidences/evidences-${disputeid}`;
+        
+    //     // await new Promise((resolve, reject) => {
+    //     //     fs.mkdir(path, { recursive: true }, (err) => {
+    //     //         if (err) {
+    //     //             reject(`Error creating directory: ${err.message}`);
+    //     //         } else {
+    //     //             console.log('Directory created successfully!');
+
+    //     //             resolve(true);
+    //     //         }
+    //     //     });
+    //     // });
+        
+    //     req.body.disputeId = disputeid
+
+    //     //console.log(req.body)
+        
+    //     next();
+    // }
+    public async submitCreatorResponse(req:Request,res:Response,next:Function): Promise<void>{
+       
+        //console.log(req.body)
+        res.status(500).json({message:"Internal server error"})
+    }
+    
+// ...existing code...
 }
+
+
