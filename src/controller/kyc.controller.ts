@@ -11,6 +11,11 @@ export class KYCController {
         this.kycService = new KYCService();
     }
 
+    verifyKYC = async (user: any) => {
+        user.iskycVerified = true;
+        await user.save();
+    }
+
     public createKYC = async (req: Request, res: Response): Promise<void> => {
         console.log("Inside createKYC");
         try {
@@ -42,6 +47,11 @@ export class KYCController {
             data.userId = user._id;
 
             const result = await this.kycService.createKYC(country, data);
+            try {
+                await this.verifyKYC(user);
+            } catch (error: any) {
+                res.status(500).json({ error: error.message });
+            }
             res.status(201).json(result);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
