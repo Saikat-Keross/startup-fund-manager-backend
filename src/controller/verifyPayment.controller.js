@@ -93,8 +93,8 @@ async function verifyPayment(req, res) {
                 fundraiser.current_amount += transaction.amount;
                 fundraiser.transactions.push(transaction.transactionId);
                 await fundraiser.save();
-                res.redirect(`http://localhost:3000/detailCampaign/${campaign_id}`);
-                res.json({fundraiser});
+                res.redirect(`${process.env.CLIENT_ORIGIN}/detailCampaign/${campaign_id}`);
+               // res.json({fundraiser});
 
                 break;
             case 'requires_action':
