@@ -12,6 +12,7 @@ import {
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
+import { upload, handleFileUpload } from './controller/upload.controller';
 
 //const verifyPayment = require('./controller/verifyPayment.controller');
 
@@ -32,7 +33,7 @@ function routes(app: Express) {
     res.sendStatus(200);
   });
 
-  app.post('/api/fundraiser', validate(createFundraiserSchema), createFundraiserHandler);
+  app.post('/api/fundraiser', validate(createFundraiserSchema),authUserFromCookie, createFundraiserHandler);
 
   app.get('/api/fundraiser', getFundraisersHandler);
 
@@ -52,6 +53,9 @@ function routes(app: Express) {
 
   app.post('/api/fundraiser/campaign/checkout/:id', createCheckoutSession);
 
+  // File upload route
+  app.post('/api/upload', upload.single('file'), handleFileUpload);
+  
   app.get('/payment-check',authUserFromCookie, verifyPayment);
 
   app.post('/api/refund/:campaignid',authUserFromCookie,createCampaignRefund)
