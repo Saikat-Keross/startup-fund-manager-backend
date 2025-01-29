@@ -34,7 +34,7 @@ router.get('/campaignRequests', authAdminUser,getFundraiserRequestsHandler);
 //router.get('/campaignRequests/:id', authAdminUser,getFundraiserRequestsHandler);
 
 //router.post('/request/campaignResponses/:id',authAdminUser,approveFundraiserRequestHandler);
-router.post('/request/campaignResponses', authAdminUser, (req, res) => {
+router.post('/request/campaignResponses',authAdminUser, (req, res) => {
     const id = req.query.id;
     approveFundraiserRequestHandler(req, res);
   });
