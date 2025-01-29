@@ -26,7 +26,8 @@ const app = express()
 
 app.use(cookieParser());
 
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
+//const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
+const CLIENT_ORIGIN =  'http://localhost:3000';
 // console.log("googleAuthrouter",googleAuthRouter)
 // console.log("authRoutes",authRoutes)
 console.log("client origin",CLIENT_ORIGIN);
