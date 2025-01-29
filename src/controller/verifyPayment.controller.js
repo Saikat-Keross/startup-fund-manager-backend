@@ -25,7 +25,7 @@
 
 
 
-const stripe = require('stripe')(process.env.STRIPE_SECRECT_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 //import Contribution from '../models/contribution.model';
 import Transaction from '../models/transaction.model';
@@ -93,7 +93,7 @@ async function verifyPayment(req, res) {
                 fundraiser.current_amount += transaction.amount;
                 fundraiser.transactions.push(transaction.transactionId);
                 await fundraiser.save();
-
+                res.redirect(`http://localhost:3000/detailCampaign/${campaign_id}`);
                 res.json({fundraiser});
 
                 break;
