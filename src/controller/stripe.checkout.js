@@ -1,4 +1,4 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRECT_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 import logger from '../utils/logger';
 
