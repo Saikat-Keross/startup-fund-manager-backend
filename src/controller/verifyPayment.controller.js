@@ -90,12 +90,12 @@ async function verifyPayment(req, res) {
                 const fundraiser = await Fundraiser.findById(transaction?.fundraiserId);
                 if (!fundraiser) throw new Error('Fundraiser not found');
             
-                fundraiser.current_amount += transaction.amount;
+                fundraiser.current_amount += transaction.amount/100;
                 fundraiser.transactions.push(transaction.transactionId);
                 await fundraiser.save();
 
                 res.json({fundraiser});
-
+                   
                 break;
             case 'requires_action':
                 // The payment requires additional action (e.g., 3D Secure)

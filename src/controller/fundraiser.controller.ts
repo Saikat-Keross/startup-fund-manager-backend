@@ -47,9 +47,9 @@ const dummyStripe = {
 
 export async function createFundraiserHandler(req: Request, res: Response) {
   // consider implementing 2 Phased Transactions
-
+  const userId = req?.user?.id
   let stripeAccount;
-
+  console.log("userId",userId);
   // First create user account on Stripe to store ID on our Fundraiser document
   try {
     const account = await dummyStripe.accounts.create({
