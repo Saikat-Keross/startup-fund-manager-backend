@@ -3,6 +3,7 @@ import { KYCService } from '../service/kyc/kyc.service';
 import { KYCDocument } from '../service/kyc/kyc.factory';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model';
+import axios from 'axios';
 
 export class KYCController {
     private kycService: KYCService;
@@ -11,9 +12,24 @@ export class KYCController {
         this.kycService = new KYCService();
     }
 
-    verifyKYC = async (user: any) => {
+   /*  verifyKYC = async (user: any) => {
         user.iskycVerified = true;
+        
         await user.save();
+    } */
+    verifyKYC = async (user: any) => {
+        try {
+            const response = await axios.get(`${process.env.AI_URL}/verify`);
+            const data = response.data;
+
+            // Assuming you want to log the data or use it in some way
+            console.log('Verification data:', data);
+
+            user.iskycVerified = true;
+            await user.save();
+        } catch (error) {
+            console.error('Error verifying KYC:', error);
+        }
     }
 
     public createKYC = async (req: Request, res: Response): Promise<void> => {
