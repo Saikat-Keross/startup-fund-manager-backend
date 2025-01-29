@@ -46,6 +46,10 @@ const authUserFromCookie = (req: Request, res: Response, next: NextFunction) => 
 
 const authAdminUser = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies?.token;
+
+    console.log("Hello i am inside authuser");
+    console.log("token: ", token);
+
     if (!token) {
         return res.status(401).send({ error: 'Access denied. No token provided.' });
     }

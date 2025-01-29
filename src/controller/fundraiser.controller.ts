@@ -75,7 +75,9 @@ export async function createFundraiserHandler(req: Request, res: Response) {
   if (!stripeAccount) {
     return res.status(400).send('Failed to create Stripe account');
   }
-  const stripeFundraiser = { ...req.body, stripeId: stripeAccount.id };
+  //const stripeFundraiser = { ...req.body, stripeId: stripeAccount.id };
+  const stripeFundraiser = { ...req.body, stripeId: stripeAccount.id,userId: userId };
+
 
   // Create our Fundraiser
   try {
@@ -244,7 +246,7 @@ export async function approveFundraiserRequestHandler(req: Request, res: Respons
 
     fundraiser.approved = true;
     fundraiser.published = true;
-    fundraiser.status = 'approved';
+    fundraiser.status = 'active';
     fundraiser.approvedComments = comments;
     fundraiser.approvedAt = new Date();
     fundraiser.approvedBy = user._id;
