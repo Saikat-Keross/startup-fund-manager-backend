@@ -34,4 +34,17 @@ export class DisputeController{
             return res.status(500).json({message:'Error while saving admin queries'})
         }
     }
+    public async getLatestDisputeInfo(req:Request,res:Response,next:Function){
+        const _disputeId = req.params.id
+        
+        
+            const disputeDetails =  await dispute.findOne({disputeId:_disputeId})
+           
+           return res.status(200).json({_details:disputeDetails,files:req.resources})
+           
+        
+
+        
+
+    }
 }
