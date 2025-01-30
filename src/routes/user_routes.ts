@@ -50,7 +50,7 @@ router.post('/roleRequests',authAdminUser, userController.getRoleRequests);
 
 router.post('/submitDispute',(req: any, res: any, next: any) => {
     
-    
+    console.log("bjbjkbjkbjk");
     const disputeId = uuidv4() //randomly generating a disputeId
     req.customData = { disputeId }
     req.upload = multer({
