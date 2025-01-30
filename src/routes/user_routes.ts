@@ -82,7 +82,7 @@ router.post('/submitDispute',(req: any, res: any, next: any) => {
 },userController.submitDispute);
 
 router.post("/submitCreatorResponse/:id",(req:any,res:any,next:Function)=>{
-    const disputeId = req.params.id //randomly generating a disputeId
+    const disputeId = req.params.id //getting dispute id from dynamic route
     req.customData = { disputeId }
     req.upload = multer({
         storage: multer.diskStorage({
@@ -93,12 +93,12 @@ router.post("/submitCreatorResponse/:id",(req:any,res:any,next:Function)=>{
             }
         })
     }).array('files', 5);
-    console.log("uploading...")
+    //console.log("uploading...")
     next()
 
 
     },(req: any, res: any, next: any) => {
-        console.log("still uploading")
+        //console.log("still uploading")
         req.upload(req, res, (err: any) => {
             console.log(req.body)
             if (err) {
