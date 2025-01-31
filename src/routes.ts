@@ -26,6 +26,8 @@ import getAllTransactions from './controller/allTransactions.controller';
 import { createStripeAccount } from './controller/stripeAccount.controller';
 import createOnboardingLink from './controller/stripeOnboard.controller';
 
+// campaign detail
+import { postCommentHandler, getAllCommentsHandler } from './controller/CampaignDetail/questions_answers.controller';
 
 
 function routes(app: Express) {
@@ -69,6 +71,10 @@ function routes(app: Express) {
   app.post('/api/payment/account/:campaignId',createStripeAccount)
 
   app.post('/api/account/onboard',createOnboardingLink)
+
+  // campaign detail
+  app.post('/api/QnA', postCommentHandler);
+  app.get('/api/QnA', getAllCommentsHandler);
 }
 
 export default routes;
