@@ -6,9 +6,12 @@ import multer from 'multer';
 import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
+import { DisputeController } from '../controller/dispute.controller';
+
 
 const router = express.Router();
 const userController = new UserController();
+const disputeController = new DisputeController()
 
 
 
@@ -196,6 +199,7 @@ router.post(
       try {
         // Parse `responses` from the query parameter
         const responses = JSON.parse(req.query.responses);
+        req.creatorResponse = responses
         const uploadFields = responses.map((e) => ({
           name: `question_${e.questionId}`,
           maxCount: 5,
@@ -241,6 +245,8 @@ router.post(
     },
     userController.submitCreatorResponse
   );
+
+  router.get("/getDisputeInfo/:id",disputeController.getDisputeInformation)
   
 
 export default router;

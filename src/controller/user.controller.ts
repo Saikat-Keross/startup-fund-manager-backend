@@ -157,16 +157,17 @@ export class UserController {
     // ...existing code...
     public async submitDispute(req: Request, res: Response): Promise<void> {
         console.log(req.body)
-       const {disputeId,disputeType,description} = req.body
+       const {disputeId,disputeType,description,desiredOutcome,campaignName,campaignId} = req.body
         try {
            
                 await dispute.create({ 
                 disputeId: disputeId,
-                rasiedBy: req.user?._id || "ADMIN",  
+                rasiedBy: req.user?._id || "BACKER",  
                 disputeType:disputeType,
                 description: description,
-                
-                
+                desiredOutcome:desiredOutcome,
+                campaignName:campaignName,
+                campaignId:campaignId,
                 createdAt: Date.now(),
                 resolvedAt: null,
                 resolvedBy: null,
@@ -206,9 +207,12 @@ export class UserController {
     //     next();
     // }
     public async submitCreatorResponse(req:Request,res:Response,next:Function): Promise<void>{
-       
+        const _disputeId = req.params.id
         //console.log(req.body)
-        res.status(500).json({message:"Internal server error"})
+        // const responses = req.query.responses
+        console.log(req.creatorResponse)
+        await dispute.updateOne({disputeId:_disputeId},{ $set: {creatorResponse:req.creatorResponse} })
+        res.status(500).json({message:"Creator response Submitted."})
     }
     
 // ...existing code...
