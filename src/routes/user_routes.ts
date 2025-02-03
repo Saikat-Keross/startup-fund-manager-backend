@@ -247,6 +247,7 @@ router.post(
   );
 
   router.get("/getDisputeInfo/:id",disputeController.getDisputeInformation)
+  router.get("/getRoleWiseDisputes/",userController.getRoleWiseDisputes)
   
 
 export default router;

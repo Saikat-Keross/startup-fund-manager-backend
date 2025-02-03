@@ -148,7 +148,7 @@ router.get('/fetchDisputeInfo/:id', (req: any, res: any,next:Function) => {
     res.status(400).send({message: "Please provide a valid campaign id"});
 }) */
 
-router.get('/getAlldisputes',disputeController.getAlldisputes)
+//router.get('/getAlldisputes',disputeController.getAlldisputes)
 
 router.post('/submitAdminQueries/:id',disputeController.submitAdminQueries)
 
@@ -215,6 +215,8 @@ router.get('/fetchLatestDisputeInfo/:id',(req: any, res: any,next:Function)=>{
   }
   
 },disputeController.getLatestDisputeInfo)
+
+router.post('/rejectDispute/:id',disputeController.rejectDispute)
 
 
 export default router;

@@ -8,7 +8,7 @@ const disputeSchema = new mongoose.Schema({
     },
     rasiedBy: {
         type: String,//mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        
         required: true,
     },
     disputeType: {
@@ -22,8 +22,8 @@ const disputeSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Under Review', 'Resolved'],
-        default: 'Under Review',
+        enum: ['Under Admin Review', 'Under Creator Review','Resolved','Rejected'],
+        default: 'Under Admin Review',
     },
     desiredOutcome:{
         type:String,
