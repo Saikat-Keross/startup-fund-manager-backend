@@ -27,7 +27,7 @@ import { createStripeAccount } from './controller/stripeAccount.controller';
 import createOnboardingLink from './controller/stripeOnboard.controller';
 
 // campaign detail
-import { postCommentHandler, getAllCommentsHandler } from './controller/CampaignDetail/questions_answers.controller';
+import { postCommentHandler, replyCommentHandler, getAllCommentsHandler } from './controller/CampaignDetail/questions_answers.controller';
 
 
 function routes(app: Express) {
@@ -74,6 +74,7 @@ function routes(app: Express) {
 
   // campaign detail
   app.post('/api/QnA', postCommentHandler);
+  app.post('/api/QnA/Reply', replyCommentHandler);
   app.get('/api/QnA', getAllCommentsHandler);
 }
 
