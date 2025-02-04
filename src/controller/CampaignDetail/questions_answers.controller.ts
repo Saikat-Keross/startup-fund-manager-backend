@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { postComment, getAllComments } from '../../service/CampaignDetail/questions_answers.service';
+import { postComment, postReply, getAllComments } from '../../service/CampaignDetail/questions_answers.service';
 
 export async function postCommentHandler(req: Request, res: Response){
     const data = req.body;
@@ -32,6 +32,48 @@ export async function postCommentHandler(req: Request, res: Response){
         return false;
         
     }
+}
+
+export async function replyCommentHandler(req: Request, res:Response){
+    console.log('Inside replyCommentHandler');
+    const data = {
+        authorId: req.body.replyingToId,
+        reply: req.body
+    };
+
+    delete req.body.replyingToId;
+
+    console.log(req.body);
+
+    try{
+        const comment = await postReply(data);
+
+        return comment;
+    }
+    catch(error){
+        console.log('An error occurred in questions_answers.controller.ts');
+        
+        if (error instanceof Error) {
+            console.log(`Error message: ${error.message}`);
+
+            res.status(500).json({
+                status: "error",
+                message: error.message,
+                timestamp: new Date().toISOString()
+            });
+        }
+        else{
+            res.status(500).json({
+                status: "error",
+                message: error,
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        return false;
+        
+    }
+    
 }
 
 export async function getAllCommentsHandler(req: Request, res:Response){
