@@ -217,6 +217,6 @@ router.get('/fetchLatestDisputeInfo/:id',(req: any, res: any,next:Function)=>{
 },disputeController.getLatestDisputeInfo)
 
 router.post('/rejectDispute/:id',disputeController.rejectDispute)
-
+router.post('/approveDispute/:id',disputeController.approveDispute)
 
 export default router;
