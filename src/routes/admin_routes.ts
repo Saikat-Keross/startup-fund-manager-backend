@@ -148,11 +148,12 @@ router.get('/fetchDisputeInfo/:id', (req: any, res: any,next:Function) => {
     res.status(400).send({message: "Please provide a valid campaign id"});
 }) */
 
-router.get('/getAlldisputes',disputeController.getAlldisputes)
+//router.get('/getAlldisputes',disputeController.getAlldisputes)
 
 router.post('/submitAdminQueries/:id',disputeController.submitAdminQueries)
 
 router.get('/fetchLatestDisputeInfo/:id',(req: any, res: any,next:Function)=>{
+  // console.log(req.params.id)
   const creator_evidencePath = path.join(rootDir, 'uploads', 'dispute-evidences', `creator-evidences-${req.params.id}`);
 
   const backer_evidencePath = path.join(rootDir, 'uploads', 'dispute-evidences', `evidences-${req.params.id}`);
@@ -196,7 +197,8 @@ router.get('/fetchLatestDisputeInfo/:id',(req: any, res: any,next:Function)=>{
         size: stats.size,
         url: publicUrl,
         type: path.extname(filename).slice(1).toUpperCase(),
-        lastModified: stats.mtime
+        lastModified: stats.mtime,
+        for:'backer'
       };
     });
 
@@ -213,6 +215,8 @@ router.get('/fetchLatestDisputeInfo/:id',(req: any, res: any,next:Function)=>{
   }
   
 },disputeController.getLatestDisputeInfo)
+
+router.post('/rejectDispute/:id',disputeController.rejectDispute)
 
 
 export default router;
