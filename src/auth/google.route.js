@@ -18,6 +18,9 @@ router.get('/profile', (req, res) => {
     //console.log("req",req);
     //console.log('Session:', req.session);
 
+    //console.log("req",req);
+    //console.log('Session:', req.session);
+
     if (req.isAuthenticated()) {
         let user = req?.user;
         

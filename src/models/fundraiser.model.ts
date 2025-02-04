@@ -22,6 +22,7 @@ export interface FundraiserDocument extends mongoose.Document {
   approvedBy?: string;
   approvedAt?: Date;
   approvedComments?: string;
+  draftId: string;
 }
 
 const fundraiserSchema = new mongoose.Schema({
@@ -35,6 +36,10 @@ const fundraiserSchema = new mongoose.Schema({
     required: true,
     minLength: 10,
     maxLength: 255,
+  },
+  draftId:{
+    type: String,
+    required: true
   },
   story: {
     type: String,

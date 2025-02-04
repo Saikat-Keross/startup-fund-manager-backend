@@ -8,9 +8,11 @@ import {
   postFavesHandler,
   updateFundraiserHandler,
   deleteFundraiserHandler,
+  submitForApprovalHandler
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
+import { upload, handleFileUpload } from './controller/upload.controller';
 
 //const verifyPayment = require('./controller/verifyPayment.controller');
 
@@ -35,6 +37,8 @@ function routes(app: Express) {
 
   app.get('/api/fundraiser', getFundraisersHandler);
 
+  app.post('/api/fundraiser/submitForApproval', submitForApprovalHandler);
+
   app.get('/api/fundraiser/campaign/:id', getFundraiserByIdHandler);
 
   app.post('/api/fundraiser/campaign/faves/:id', postFavesHandler);
@@ -49,12 +53,16 @@ function routes(app: Express) {
 
   app.post('/api/fundraiser/campaign/checkout/:id', createCheckoutSession);
 
+  // File upload route
+  app.post('/api/upload', upload.single('file'), handleFileUpload);
+  
   app.get('/payment-check',authUserFromCookie, verifyPayment);
 
   app.post('/api/refund/:campaignid',authUserFromCookie,createCampaignRefund)
 
 
   app.get('/api/transactions/user/:userId', getTransactionsByUserId);
+  
 
   app.get('/api/transactions',getAllTransactions)
 

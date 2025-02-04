@@ -73,7 +73,9 @@ export async function createFundraiserHandler(req: Request, res: Response) {
   if (!stripeAccount) {
     return res.status(400).send('Failed to create Stripe account');
   }
-  const stripeFundraiser = { ...req.body, stripeId: stripeAccount.id };
+  //const stripeFundraiser = { ...req.body, stripeId: stripeAccount.id };
+  const stripeFundraiser = { ...req.body, stripeId: stripeAccount.id,userId: userId };
+
 
   // Create our Fundraiser
   try {
@@ -186,13 +188,27 @@ export async function getFundraiserRequestsHandler(req: Request, res: Response) 
   }
 }
 
+export async function submitForApprovalHandler(req: Request, res: Response) {
+  console.log("Inside submitForApprovalHandler");
+  console.log(req.body);
+  // Create our Fundraiser
+  try {
+    let fundraiser = await createFundraiser(req.body);
+    console.log(fundraiser);
+  } catch (ex: any) {
+    logger.error(ex.message);
+    res.status(400).send(ex.message);
+  }
+}
+
+
 export async function approveFundraiserRequestHandler(req: Request, res: Response) {
   //let { id } = req.params;
   const id = req.query.id;
-  console.log("id",id);
+  console.log("id", id);
 
   let { approved, comments } = req.body;
-  console.log("inside apprval",req.body);
+  console.log("inside apprval", req.body);
 
   try {
     let fundraiser = await getFundraiserById(id);
@@ -202,7 +218,7 @@ export async function approveFundraiserRequestHandler(req: Request, res: Respons
       return res.status(400).send('Fundraiser not found');
     }
 
-    if(fundraiser.status !== 'pending'){
+    if (fundraiser.status !== 'pending') {
       return res.status(400).send('Fundraiser is not pending');
     }
 
@@ -215,20 +231,24 @@ export async function approveFundraiserRequestHandler(req: Request, res: Respons
     }
 
 
-    if(approved) {
-      fundraiser.approved = true;
-      fundraiser.published = true;
-      fundraiser.status = 'active';
-    }
-    else{
-      fundraiser.approved = false;
-      fundraiser.published = false;
-      fundraiser.status = 'failed';
-    }
+    // if (approved) {
+    //   fundraiser.approved = true;
+    //   fundraiser.published = true;
+    //   fundraiser.status = 'active';
+    // }
+    // else {
+    //   fundraiser.approved = false;
+    //   fundraiser.published = false;
+    //   fundraiser.status = 'failed';
+    // }
+
+    fundraiser.approved = true;
+    fundraiser.published = true;
+    fundraiser.status = 'active';
     fundraiser.approvedComments = comments;
     fundraiser.approvedAt = new Date();
     fundraiser.approvedBy = user._id;
-   
+
     fundraiser.save();
 
     return res.send(fundraiser);

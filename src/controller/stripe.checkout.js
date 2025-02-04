@@ -1,4 +1,4 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRECT_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 import logger from '../utils/logger';
 
@@ -42,8 +42,8 @@ export const createCheckoutSession = async (req, res) => {
                 },
             },
             mode: 'payment',
-            success_url: `http://localhost:8000/payment-check?session_id={CHECKOUT_SESSION_ID}&campaign_id=${selectedCampaignId}`,
-            cancel_url: `http://localhost:8000/payment-check?session_id={CHECKOUT_SESSION_ID}&campaign_id=${selectedCampaignId}`,
+            success_url: `http://192.168.3.7:8000/payment-check?session_id={CHECKOUT_SESSION_ID}&campaign_id=${selectedCampaignId}`,
+            cancel_url: `http://192.168.3.7:8000/payment-check?session_id={CHECKOUT_SESSION_ID}&campaign_id=${selectedCampaignId}`,
         });
 
         //res.redirect(303, session.url);
