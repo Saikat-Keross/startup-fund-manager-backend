@@ -8,7 +8,8 @@ import {
   postFavesHandler,
   updateFundraiserHandler,
   deleteFundraiserHandler,
-  submitForApprovalHandler
+  submitForApprovalHandler,
+  getFundraisersHandlerForDashboard
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
@@ -35,7 +36,9 @@ function routes(app: Express) {
 
   app.post('/api/fundraiser', validate(createFundraiserSchema),authUserFromCookie, createFundraiserHandler);
 
-  app.get('/api/fundraiser', getFundraisersHandler);
+  app.get('/api/fundraiser',authUserFromCookie, getFundraisersHandler);
+
+  app.get('/api/fundraiser/dashboard',authUserFromCookie, getFundraisersHandlerForDashboard);
 
   app.post('/api/fundraiser/submitForApproval', submitForApprovalHandler);
 
