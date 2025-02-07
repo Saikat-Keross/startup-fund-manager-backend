@@ -12,7 +12,7 @@ import {
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
-import { upload, handleFileUpload } from './controller/upload.controller';
+import { upload, handleFileUpload, handleFileUploads } from './controller/upload.controller';
 
 //const verifyPayment = require('./controller/verifyPayment.controller');
 
@@ -28,6 +28,9 @@ import createOnboardingLink from './controller/stripeOnboard.controller';
 
 // campaign detail
 import { postCommentHandler, replyCommentHandler, getAllCommentsHandler } from './controller/CampaignDetail/questions_answers.controller';
+
+// campaign
+import { postCampaignHandler } from './controller/Campaign/campaign.controller';
 
 
 function routes(app: Express) {
@@ -57,6 +60,7 @@ function routes(app: Express) {
 
   // File upload route
   app.post('/api/upload', upload.single('file'), handleFileUpload);
+  app.post('/api/uploadMultiple', upload.array('file', 2), handleFileUploads);
   
   app.get('/payment-check',authUserFromCookie, verifyPayment);
 
@@ -76,6 +80,9 @@ function routes(app: Express) {
   app.post('/api/QnA', postCommentHandler);
   app.post('/api/QnA/Reply', replyCommentHandler);
   app.get('/api/QnA', getAllCommentsHandler);
+
+  // campaign detail
+  app.post('/api/Campaign', postCampaignHandler);
 }
 
 export default routes;
