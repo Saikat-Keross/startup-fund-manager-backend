@@ -12,6 +12,7 @@ export class KYCController {
         this.kycService = new KYCService();
     }
 
+<<<<<<< HEAD
    /*  verifyKYC = async (user: any) => {
         user.iskycVerified = true;
         
@@ -30,6 +31,11 @@ export class KYCController {
         } catch (error) {
             console.error('Error verifying KYC:', error);
         }
+=======
+    verifyKYC = async (user: any) => {
+        user.iskycVerified = true;
+        await user.save();
+>>>>>>> 1bb3bd9 (some changes made)
     }
 
     public createKYC = async (req: Request, res: Response): Promise<void> => {
@@ -68,6 +74,10 @@ export class KYCController {
             } catch (error: any) {
                 res.status(500).json({ error: error.message });
             }
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 1bb3bd9 (some changes made)
             res.status(201).json(result);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -126,6 +136,7 @@ export class KYCController {
             }
 
             const updatedKYC = await this.kycService.updateKYC(id, data);
+            //verifyKYC(updatedKYC);
             res.status(200).json(updatedKYC);
         } catch (error: any) {
             res.status(500).json({ error: error.message });

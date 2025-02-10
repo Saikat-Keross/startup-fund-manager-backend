@@ -23,6 +23,7 @@ export interface FundraiserDocument extends mongoose.Document {
   approvedAt?: Date;
   approvedComments?: string;
   draftId: string;
+  pitchId: mongoose.Schema.Types.ObjectId;
 }
 
 const fundraiserSchema = new mongoose.Schema({
@@ -120,6 +121,10 @@ const fundraiserSchema = new mongoose.Schema({
     required: function (this: any) {
       return this.status === 'failed';
     },
+  },
+  pitchId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pitch',
   }
 });
 
