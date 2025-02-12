@@ -30,7 +30,7 @@ import getRecomendedCampaignsTypesPreviouslyInvested from './controller/personal
 
 import { getLatestTransactions } from './controller/transaction.controller'
 
-import { getLatestCampaigns, getHotCampaigns } from './controller/campaignTypes.controller'
+import { getLatestCampaigns, getHotCampaigns,willBeClosedCampaigns,raisedMostMoneylastweek } from './controller/campaignTypes.controller'
 
 
 function routes(app: Express) {
@@ -87,6 +87,8 @@ function routes(app: Express) {
   //Get Campaigns Types
   app.get('/api/campaigns/fresh', getLatestCampaigns)
   app.get('/api/campaigns/hot', getHotCampaigns)
+  app.get('/api/campaigns/closing',willBeClosedCampaigns)
+  app.get('/api/transactions/weeklyMoneyRaised', raisedMostMoneylastweek)
 }
 
 export default routes;
