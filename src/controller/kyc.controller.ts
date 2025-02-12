@@ -12,7 +12,6 @@ export class KYCController {
         this.kycService = new KYCService();
     }
 
-<<<<<<< HEAD
    /*  verifyKYC = async (user: any) => {
         user.iskycVerified = true;
         
@@ -20,22 +19,17 @@ export class KYCController {
     } */
     verifyKYC = async (user: any) => {
         try {
-            const response = await axios.get(`${process.env.AI_URL}/verify`);
-            const data = response.data;
+            //const response = await axios.get(`${process.env.AI_URL}/verify`);
+            //const data = response.data;
 
             // Assuming you want to log the data or use it in some way
-            console.log('Verification data:', data);
+            //console.log('Verification data:', data);
 
             user.iskycVerified = true;
             await user.save();
         } catch (error) {
             console.error('Error verifying KYC:', error);
         }
-=======
-    verifyKYC = async (user: any) => {
-        user.iskycVerified = true;
-        await user.save();
->>>>>>> 1bb3bd9 (some changes made)
     }
 
     public createKYC = async (req: Request, res: Response): Promise<void> => {
@@ -74,10 +68,7 @@ export class KYCController {
             } catch (error: any) {
                 res.status(500).json({ error: error.message });
             }
-<<<<<<< HEAD
-=======
         
->>>>>>> 1bb3bd9 (some changes made)
             res.status(201).json(result);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
