@@ -10,6 +10,7 @@ import authRoutes from './routes/authRoutes';
 import user_routes from "./routes/user_routes";
 import admin_routes from "./routes/admin_routes";
 import kyc_routes from "./routes/kyc.routes";
+import pitch from "./routes/pitch.routes";
 
 import { createDefaultAdmin } from './controller/createAdminUser';
 import path from 'path';
@@ -85,5 +86,7 @@ app.listen(port, async () => {
   app.use("/admin",admin_routes);
 
   app.use("/kyc",kyc_routes);
+
+  app.use("/pitch",pitch);
   //app.use("/profile",user_profile);
 });
