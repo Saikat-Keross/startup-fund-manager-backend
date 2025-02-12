@@ -90,7 +90,7 @@ async function verifyPayment(req, res) {
                 const fundraiser = await Fundraiser.findById(transaction?.fundraiserId);
                 if (!fundraiser) throw new Error('Fundraiser not found');
             
-                fundraiser.current_amount += transaction.amount;
+                fundraiser.current_amount += transaction.amount/100;
                 fundraiser.transactions.push(transaction.transactionId);
                 await fundraiser.save();
                 res.redirect(`${process.env.CLIENT_ORIGIN}/detailCampaign/${campaign_id}`);

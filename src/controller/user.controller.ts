@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createUser,getUserById,updateUser,deleteUser, getAllUsers, getAllRoleRequests, getRoleRequest } from '../service/user.service';
+import { createUser, getUserById, updateUser, deleteUser, getAllUsers, getAllRoleRequests, getRoleRequest } from '../service/user.service';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import User from '../models/user.model';
@@ -7,16 +7,17 @@ import dispute from '../models/dispute.model';
 
 import multer from 'multer';
 import fs from 'fs';
+import Fundraiser from '../models/fundraiser.model';
 
 
 const secretKey = process.env.JWT_SECRET;
 
 export class UserController {
-   /*  private userService: UserService;
-
-    constructor() {
-        this.userService = new UserService();
-    } */
+    /*  private userService: UserService;
+ 
+     constructor() {
+         this.userService = new UserService();
+     } */
 
     public async createUser(req: Request, res: Response): Promise<void> {
         console.log(req.body);
@@ -48,11 +49,11 @@ export class UserController {
         try {
             //const user = await getUserById(req.user.id);
             console.log("Inside getUserByJWT");
-            if(req.cookies.token){
+            if (req.cookies.token) {
                 const token = req.cookies.token;
-                console.log("token",token);
+                console.log("token", token);
                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                console.log("decoded",decoded);
+                console.log("decoded", decoded);
                 const user = await getUserById(decoded.id);
                 let userPrincipal = {
                     id: user._id,
@@ -61,7 +62,7 @@ export class UserController {
                     role: user.role,
                     country: user.country,
                 }
-                console.log("userPrincipal",userPrincipal);
+                console.log("userPrincipal", userPrincipal);
                 if (user) {
                     res.status(200).json(userPrincipal);
                 }
@@ -127,9 +128,9 @@ export class UserController {
         console.log("inside role request");
         try {
             const token = req.cookies.token;
-            console.log("token",token);
+            console.log("token", token);
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            console.log("decoded",decoded);
+            console.log("decoded", decoded);
             //const role = await getRoleRequest(decoded.id);
             const roleObj = await getRoleRequest(req.params.id);
             res.status(200).json(roleObj);
@@ -138,18 +139,18 @@ export class UserController {
         }
     }
 
-    public async geRolesForCurrentUser(req: Request, res: Response): Promise<void>{
-        try{
+    public async geRolesForCurrentUser(req: Request, res: Response): Promise<void> {
+        try {
             const token = req.cookies.token;
             const decoded = jwt.verify(token, secretKey as string);
-            const user = await User.findOne({ _id : decoded.id });
+            const user = await User.findOne({ _id: decoded.id });
             const role = user.role;
-            res.status(200).send({role : role});
+            res.status(200).send({ role: role });
         }
-        catch(e){
+        catch (e) {
             console.log(e);
-             res.status(500).send({
-                error : 'Internal Server Error',
+            res.status(500).send({
+                error: 'Internal Server Error',
             })
         }
     }
@@ -157,16 +158,35 @@ export class UserController {
     // ...existing code...
     public async submitDispute(req: Request, res: Response): Promise<void> {
         console.log(req.body)
-       const {disputeId,disputeType,description} = req.body
+        //const user  = await this.getUserByJWT(req, res)
+        let user_;
+        //console.log(req.cookies)
+        if (req.cookies.token) {
+            const token = req.cookies.token;
+            console.log("token", token);
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            console.log("decoded", decoded);
+            const user = await getUserById(decoded.id);
+            user_ = {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                country: user.country,
+            }
+        }
+        console.log("user who is submitting dispute:: " + user_)
+        const { disputeId, disputeType, description, desiredOutcome, campaignName, campaignId } = req.body
         try {
-           
-                await dispute.create({ 
+
+            await dispute.create({
                 disputeId: disputeId,
-                rasiedBy: req.user?._id || "ADMIN",  
-                disputeType:disputeType,
+                rasiedBy: user_?.id || "BACKER",
+                disputeType: disputeType,
                 description: description,
-                
-                
+                desiredOutcome: desiredOutcome,
+                campaignName: campaignName,
+                campaignId: campaignId,
                 createdAt: Date.now(),
                 resolvedAt: null,
                 resolvedBy: null,
@@ -175,18 +195,19 @@ export class UserController {
             console.log('success')
             res.status(201).send({ message: 'Dispute submitted successfully' });
         } catch (error) {
-            console.log('error: '+(error as Error).message)
+            console.log('error: ' + (error as Error).message)
             res.status(500).send({ error: (error as Error).message });
         }
     }
-    
+
+
     // public async createDirectory(req : Request, res: Response,next:Function):Promise<void>{
     //     console.log("while creating directory :" )
     //     console.log(req.body)
     //     const disputeid = uuidv4(); 
-        
+
     //     //const path = `./uploads/dispute-evidences/evidences-${disputeid}`;
-        
+
     //     // await new Promise((resolve, reject) => {
     //     //     fs.mkdir(path, { recursive: true }, (err) => {
     //     //         if (err) {
@@ -198,20 +219,54 @@ export class UserController {
     //     //         }
     //     //     });
     //     // });
-        
+
     //     req.body.disputeId = disputeid
 
     //     //console.log(req.body)
-        
+
     //     next();
     // }
-    public async submitCreatorResponse(req:Request,res:Response,next:Function): Promise<void>{
-       
+    public async submitCreatorResponse(req: Request, res: Response, next: Function): Promise<void> {
+        const _disputeId = req.params.id
         //console.log(req.body)
-        res.status(500).json({message:"Internal server error"})
+        // const responses = req.query.responses
+        console.log(req.creatorResponse)
+        await dispute.updateOne({ disputeId: _disputeId }, { $set: { creatorResponse: req.creatorResponse } })
+        res.status(500).json({ message: "Creator response Submitted." })
     }
+    public async getRoleWiseDisputes(req: Request, res: Response, next: Function): Promise<void> {
+        const userRole = req.query.role
+        console.log("ROle is =>" + userRole)
+        let disputes;
+        if (req.cookies.token) {
+            const token = req.cookies.token;
+            console.log("token", token);
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            console.log("decoded", decoded);
+            const user = await getUserById(decoded.id);
+
+            if (userRole == 'investor')
+                disputes = await dispute.find({ rasiedBy: user?.id })
+            else if(userRole == 'fundraiser') {
+                const campaigns_ = await Fundraiser.find({ userId: user?.id });
+                const campaignIds = campaigns_.map(campaign => campaign.id);
+                disputes = await dispute.find({ campaignId: { $in: campaignIds } });
+            }
+            else{
+                disputes = await dispute.find({})
+            }
+
+            }
+            
+            res.status(200).json(disputes)
+
+        }
+
+        // ...existing code...
+
+    }
+
+
     
-// ...existing code...
-}
 
 

@@ -104,7 +104,7 @@ router.post('/request/campaignResponses',authAdminUser, (req, res) => {
 
 const rootDir = path.dirname(__dirname);
 const uploadsPath = path.join(rootDir, 'uploads');
-router.use('/uploads', express.static(uploadsPath));
+router.use('/uploads', express.static(uploadsPath)); //public path to access resouces
 
 router.get('/fetchDisputeInfo/:id', (req: any, res: any,next:Function) => {
   const evidencePath = path.join(rootDir, 'uploads', 'dispute-evidences', `evidences-${req.params.id}`);
@@ -148,8 +148,75 @@ router.get('/fetchDisputeInfo/:id', (req: any, res: any,next:Function) => {
     res.status(400).send({message: "Please provide a valid campaign id"});
 }) */
 
-router.get('/getAlldisputes',disputeController.getAlldisputes)
+//router.get('/getAlldisputes',disputeController.getAlldisputes)
+
 router.post('/submitAdminQueries/:id',disputeController.submitAdminQueries)
 
+router.get('/fetchLatestDisputeInfo/:id',(req: any, res: any,next:Function)=>{
+  // console.log(req.params.id)
+  const creator_evidencePath = path.join(rootDir, 'uploads', 'dispute-evidences', `creator-evidences-${req.params.id}`);
+
+  const backer_evidencePath = path.join(rootDir, 'uploads', 'dispute-evidences', `evidences-${req.params.id}`);
+
+  // Check if directory exists
+  if (!fs.existsSync(creator_evidencePath) || !fs.existsSync(backer_evidencePath)) {
+    return res.status(404).json({ error: 'Evidence directory not found' });
+  }
+
+  try {
+    // Read directory contents
+    const creatorsubmitted_files = fs.readdirSync(creator_evidencePath);
+    const backersubmitted_files = fs.readdirSync(backer_evidencePath);
+    
+    // Map files to include full URLs and file information
+    const resources_0 = creatorsubmitted_files.map(filename => {
+      const filePath = path.join(creator_evidencePath, filename);
+      const stats = fs.statSync(filePath);
+      
+      // Generate public URL for the file
+      const publicUrl = `/uploads/dispute-evidences/creator-evidences-${req.params.id}/${filename}`;
+      
+      return {
+        name: filename,
+        size: stats.size,
+        url: publicUrl,
+        type: path.extname(filename).slice(1).toUpperCase(),
+        lastModified: stats.mtime
+      };
+    });
+
+    const resources_1 = backersubmitted_files.map(filename => {
+      const filePath = path.join(backer_evidencePath, filename);
+      const stats = fs.statSync(filePath);
+      
+      // Generate public URL for the file
+      const publicUrl = `/uploads/dispute-evidences/evidences-${req.params.id}/${filename}`;
+      
+      return {
+        name: filename,
+        size: stats.size,
+        url: publicUrl,
+        type: path.extname(filename).slice(1).toUpperCase(),
+        lastModified: stats.mtime,
+        for:'backer'
+      };
+    });
+
+    
+
+
+
+    //res.json(resources);
+    req.resources = [...resources_0,...resources_1]
+    next()
+  } catch (error) {
+    console.error('Error reading directory:', error);
+    res.status(500).json({ error: 'Error reading evidence directory' });
+  }
+  
+},disputeController.getLatestDisputeInfo)
+
+router.post('/rejectDispute/:id',disputeController.rejectDispute)
+router.post('/approveDispute/:id',disputeController.approveDispute)
 
 export default router;

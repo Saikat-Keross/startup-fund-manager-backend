@@ -10,7 +10,7 @@ import authRoutes from './routes/authRoutes';
 import user_routes from "./routes/user_routes";
 import admin_routes from "./routes/admin_routes";
 import kyc_routes from "./routes/kyc.routes";
-import pitch from "./routes/pitch.routes";
+import pitch_routes from "./routes/pitch.routes";
 
 import { createDefaultAdmin } from './controller/createAdminUser';
 import path from 'path';
@@ -28,6 +28,7 @@ const app = express()
 app.use(cookieParser());
 
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
+//const CLIENT_ORIGIN ='http://localhost:3000';
 // console.log("googleAuthrouter",googleAuthRouter)
 // console.log("authRoutes",authRoutes)
 console.log("client origin",CLIENT_ORIGIN);
@@ -87,6 +88,6 @@ app.listen(port, async () => {
 
   app.use("/kyc",kyc_routes);
 
-  app.use("/pitch",pitch);
+  app.use("/pitch",pitch_routes);
   //app.use("/profile",user_profile);
 });

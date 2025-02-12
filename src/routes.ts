@@ -8,7 +8,8 @@ import {
   postFavesHandler,
   updateFundraiserHandler,
   deleteFundraiserHandler,
-  submitForApprovalHandler
+  submitForApprovalHandler,
+  getFundraisersHandlerForDashboard
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
@@ -25,7 +26,11 @@ import getTransactionsByUserId from './controller/getTransaction.controller'
 import getAllTransactions from './controller/allTransactions.controller';
 import { createStripeAccount } from './controller/stripeAccount.controller';
 import createOnboardingLink from './controller/stripeOnboard.controller';
+import getRecomendedCampaignsTypesPreviouslyInvested from './controller/personalizedRecomendation.controller'
 
+import { getLatestTransactions } from './controller/transaction.controller'
+
+import { getLatestCampaigns, getHotCampaigns } from './controller/campaignTypes.controller'
 
 
 function routes(app: Express) {
@@ -33,9 +38,11 @@ function routes(app: Express) {
     res.sendStatus(200);
   });
 
-  app.post('/api/fundraiser', validate(createFundraiserSchema),authUserFromCookie, createFundraiserHandler);
+  app.post('/api/fundraiser', validate(createFundraiserSchema), authUserFromCookie, createFundraiserHandler);
 
-  app.get('/api/fundraiser', getFundraisersHandler);
+  app.get('/api/fundraiser', authUserFromCookie, getFundraisersHandler);
+
+  app.get('/api/fundraiser/dashboard', authUserFromCookie, getFundraisersHandlerForDashboard);
 
   app.post('/api/fundraiser/submitForApproval', submitForApprovalHandler);
 
@@ -55,20 +62,34 @@ function routes(app: Express) {
 
   // File upload route
   app.post('/api/upload', upload.single('file'), handleFileUpload);
-  
-  app.get('/payment-check',authUserFromCookie, verifyPayment);
 
-  app.post('/api/refund/:campaignid',authUserFromCookie,createCampaignRefund)
+  app.get('/payment-check', authUserFromCookie, verifyPayment);
+
+  app.post('/api/refund/:campaignid', authUserFromCookie, createCampaignRefund)
 
 
   app.get('/api/transactions/user/:userId', getTransactionsByUserId);
-  
 
-  app.get('/api/transactions',getAllTransactions)
 
-  app.post('/api/payment/account/:campaignId',createStripeAccount)
+  // app.get('/api/transactions',getAllTransactions)
 
-  app.post('/api/account/onboard',createOnboardingLink)
+  app.post('/api/payment/account/:campaignId', createStripeAccount)
+
+  app.post('/api/account/onboard', createOnboardingLink)
+
+  //Get Personalized campaigns recommendations
+  app.get('/api/campaigns/recomendations', authUserFromCookie, getRecomendedCampaignsTypesPreviouslyInvested)
+
+
+  //Get Latest Transactions
+  app.get('/api/transactions', authUserFromCookie, getLatestTransactions)
+
+  //Get Campaigns Types
+  app.get('/api/campaigns/fresh', getLatestCampaigns)
+  app.get('/api/campaigns/hot', getHotCampaigns)
 }
 
 export default routes;
+
+
+///api/campaigns/fresh?page=${page}&limit=${limit}`

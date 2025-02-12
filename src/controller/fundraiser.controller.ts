@@ -49,9 +49,7 @@ export async function createFundraiserHandler(req: Request, res: Response) {
   // consider implementing 2 Phased Transactions
   const userId = req?.user?.id
   let stripeAccount;
-
-  console.log(userId);
-
+  console.log("userId",userId);
   // First create user account on Stripe to store ID on our Fundraiser document
   try {
     const account = await dummyStripe.accounts.create({
@@ -101,8 +99,40 @@ export async function createFundraiserHandler(req: Request, res: Response) {
 }
 
 export async function getFundraisersHandler(req: Request, res: Response) {
+  let fundraisers = null;
+  const userId = req.user?.id;
+  console.log("UserId: " + userId);
+
+  const userRole = await User.findById(userId).select('role');
+  console.log("Role", userRole?.role)
   try {
-    let fundraisers = await getFundraisers({});
+    if(!userId) {
+      fundraisers = await getFundraisers({});
+    }
+    fundraisers = await getFundraisers({"userId": userId});
+    return res.send(fundraisers);
+  } catch (ex: any) {
+    logger.error(ex);
+    res.status(400).send(ex.message);
+  }
+}
+
+export async function getFundraisersHandlerForDashboard(req: Request, res: Response) {
+  let fundraisers = null;
+  const userId = req.user?.id;
+  console.log("UserId: " + userId);
+
+  const userRole = await User.findById(userId).select('role');
+  console.log("Role", userRole?.role)
+  try {
+    if(!userId || userRole?.role === 'admin' || userRole?.role === 'investor') {
+      console.log("role afaind", userRole?.role)
+      fundraisers = await getFundraisers({});
+
+    }else{
+      fundraisers = await getFundraisers({"userId": userId});
+    }
+    
     return res.send(fundraisers);
   } catch (ex: any) {
     logger.error(ex);

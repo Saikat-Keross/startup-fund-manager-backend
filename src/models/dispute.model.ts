@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
 
 const disputeSchema = new mongoose.Schema({
+
     disputeId: {    
         type: String,
         required: true,
     },
     rasiedBy: {
         type: String,//mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        
         required: true,
     },
     disputeType: {
@@ -21,13 +22,30 @@ const disputeSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Under Review', 'Resolved'],
-        default: 'Under Review',
+        enum: ['Under Admin Review', 'Under Creator Review','Resolved','Rejected'],
+        default: 'Under Admin Review',
+    },
+    desiredOutcome:{
+        type:String,
+
+    },
+    campaignId:{
+        type:String,
+        required:true,
+    },
+    campaignName:{
+        type:String,
+        required:true,
     },
     // evidences: {
     //     type: [String],
     //     required: true,
     // },
+    creatorResponse:{
+        type:[Object],
+        default:[],
+        
+    },
     adminQueries:{
         type:[Object],
         default:[],
@@ -41,7 +59,7 @@ const disputeSchema = new mongoose.Schema({
         type: Date,
     },
     resolvedBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
     },
     comments: {
