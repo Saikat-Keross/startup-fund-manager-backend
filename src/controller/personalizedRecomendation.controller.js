@@ -90,8 +90,8 @@ const getRecomendedCampaignsTypesPreviouslyInvested = async (req, res) => {
             return res.status(400).json({ error: "Investor ID is missing" });
         }
 
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 5;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
         const skip = (page - 1) * limit;
 
         const fundedCampaignIds = await getInvestorFundedCampaigns(investorId);
