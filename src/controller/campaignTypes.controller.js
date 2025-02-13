@@ -4,13 +4,13 @@ import Transaction from "../models/transaction.model";
 
 export const getLatestCampaigns = async (req, res) => {
     try {
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 5;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
         const skip = (page - 1) * limit;
 
         const fetchWithinDate = new Date();
         fetchWithinDate.setDate(fetchWithinDate.getDate() - 7);
-
+        console.log("Fetch within date:", fetchWithinDate);
 
         const latestCampaigns = await Fundraiser.find({
             status: "active",
@@ -35,8 +35,8 @@ export const getLatestCampaigns = async (req, res) => {
 
 export const getHotCampaigns = async (req, res) => {
     try {
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 5;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
         const skip = (page - 1) * limit;
         // const hotCampaigns = await Fundraiser.aggregate([
         //     { $match: { status: 'active' } },
@@ -128,8 +128,8 @@ export const getHotCampaigns = async (req, res) => {
 
 export const willBeClosedCampaigns = async (req, res) => {
     try {
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 4;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 4;
         const skip = (page - 1) * limit;
         const today = new Date();
         const next8Days = new Date();
