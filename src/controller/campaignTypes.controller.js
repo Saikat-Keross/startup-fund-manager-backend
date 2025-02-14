@@ -93,6 +93,7 @@ export const getHotCampaigns = async (req, res) => {
                     story: { $first: '$story' },
                     owner: { $first: '$owner' },
                     current_amount: { $first: '$current_amount' },
+                    image_url: { $first: '$image_url' }
                 }
             },
             {
@@ -178,8 +179,8 @@ export const willBeClosedCampaigns = async (req, res) => {
 
 export const raisedMostMoneylastweek = async (req, res) => {
     try {
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 4;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 4;
         const skip = (page - 1) * limit
 
         // const raisedMostMoneylastweek = await Fundraiser.aggregate([
@@ -244,7 +245,8 @@ export const raisedMostMoneylastweek = async (req, res) => {
                     category: { $first: "$category" },
                     story: { $first: "$story" },
                     owner: { $first: "$owner" },
-                    current_amount: { $first: "$current_amount" }
+                    current_amount: { $first: "$current_amount" },
+                    image_url: { $first: "$image_url" }
                 }
             },
             {
