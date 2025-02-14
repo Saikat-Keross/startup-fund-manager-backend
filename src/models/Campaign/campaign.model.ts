@@ -44,16 +44,16 @@ export interface CampaignDocument extends Document {
     title: string;
     story: string;
     //resourceUrl: string;
-    imageUrl: string;
+    image_url: string;
     category: 'CleanTech' | 'FinTech' | 'HealthTech' | 'EdTech' | 'AI/ML' | 'Blockchain' | 'IoT' | 'Other';
-    goalAmount: number;
+    goal_amount: number;
     currencyType: 'USD' | 'EUR' | 'GBP' | 'JPY';
     owner: {
       name: string;
       email: string;
-      stripeId: string;
     };
-    publishedStatus?: boolean;
+    endDate: string,
+    published?: boolean;
     // additionalHighlights?: Array<{
     //   title: string;
     //   description?: string;
@@ -75,18 +75,18 @@ export interface CampaignDocument extends Document {
     //shortTermGoals: string;
     //longTermGoals: string;
     //marketingStrategy: string;
-    //businessLocation: string;
-    //technologyNeeds: string;
-    //supplyChain: string;
+    businessLocation: string;
+    technologyNeeds: string;
+    supplyChain: string;
     //teamMembers: string;
     //rolesResponsibilities: string;
-    //startupCosts: string;
-    //projectedRevenue: string;
-    //breakEvenPoint: string;
-    fundingNeeded: string;
-    useOfFunds: string;
-    //businessEntity: string;
-    //licensesPermits: string;
+    startupCosts: string;
+    projectedRevenue: string;
+    breakEvenPoint: string;
+    // fundingNeeded: string;
+    // useOfFunds: string;
+    businessEntity: string;
+    licensesPermits: string;
     risksAndChallenges: string;
     keyMilestones: string;
     metricsForSuccess: string;
@@ -95,6 +95,18 @@ export interface CampaignDocument extends Document {
     //   lastValuation?: number;
     //   currencyUnit?: 'USD' | 'EUR' | 'GBP' | 'JPY' | 'INR';
     // };
+
+    // Added from old Fundraiser
+    draftId: string;
+    transactions?: string[];
+    status?: string;
+    approvedComments?: string;
+    current_amount: number;
+    stripeId?: string;
+    approved: boolean;
+    approvedBy?: string;
+    approvedAt?: Date;
+    date: Date;
   }
 
 // const campaignSchema = new Schema({
@@ -161,7 +173,7 @@ const campaignSchema = new Schema({
     title: { type: String, required: true, minlength: 1 },
     story: { type: String, required: true, minlength: 10 },
     //resourceUrl: { type: String, required: true },
-    imageUrl: { type: String, required: true },
+    image_url: { type: String, required: true },
     category: {
       type: String,
       enum: [
@@ -176,7 +188,7 @@ const campaignSchema = new Schema({
       ],
       required: true,
     },
-    goalAmount: { type: Number, required: true, min: 1 },
+    goal_amount: { type: Number, required: true, min: 1 },
     currencyType: {
       type: String,
       enum: ['USD', 'EUR', 'GBP', 'JPY'],
@@ -184,10 +196,10 @@ const campaignSchema = new Schema({
     },
     owner: {
       name: { type: String, required: true, minlength: 1 },
-      email: { type: String, required: true },
-      stripeId: { type: String, required: true, minlength: 1 },
+      email: { type: String, required: true }
     },
-    publishedStatus: { type: Boolean },
+    endDate: {type: String, required: true},
+    published: { type: Boolean },
     // additionalHighlights: [
     //   {
     //     title: { type: String, required: true },
@@ -212,18 +224,18 @@ const campaignSchema = new Schema({
     //shortTermGoals: { type: String, required: true, minlength: 10 },
     //longTermGoals: { type: String, required: true, minlength: 10 },
     //marketingStrategy: { type: String, required: true, minlength: 10 },
-    //businessLocation: { type: String, required: true, minlength: 2 },
-    //technologyNeeds: { type: String, required: true, minlength: 10 },
-    //supplyChain: { type: String, required: true, minlength: 10 },
+    businessLocation: { type: String, required: true, minlength: 2 },
+    technologyNeeds: { type: String, required: true, minlength: 10 },
+    supplyChain: { type: String, required: true, minlength: 10 },
     //teamMembers: { type: String, required: true, minlength: 10 },
     //rolesResponsibilities: { type: String, required: true, minlength: 10 },
-    //startupCosts: { type: String, required: true, minlength: 1 },
-    //projectedRevenue: { type: String, required: true, minlength: 1 },
-    //breakEvenPoint: { type: String, required: true, minlength: 1 },
-    fundingNeeded: { type: String, required: true, minlength: 1 },
-    useOfFunds: { type: String, required: true, minlength: 10 },
-    //businessEntity: { type: String, required: true, minlength: 2 },
-    //licensesPermits: { type: String, required: true, minlength: 10 },
+    startupCosts: { type: String, required: true, minlength: 1 },
+    projectedRevenue: { type: String, required: true, minlength: 1 },
+    breakEvenPoint: { type: String, required: true, minlength: 1 },
+    // fundingNeeded: { type: String, required: true, minlength: 1 },
+    // useOfFunds: { type: String, required: true, minlength: 10 },
+    businessEntity: { type: String, required: true, minlength: 2 },
+    licensesPermits: { type: String, required: true, minlength: 10 },
     risksAndChallenges: { type: String, required: true, minlength: 10 },
     keyMilestones: { type: String, required: true, minlength: 10 },
     metricsForSuccess: { type: String, required: true, minlength: 10 },
@@ -235,9 +247,60 @@ const campaignSchema = new Schema({
     //     enum: ['USD', 'EUR', 'GBP', 'JPY', 'INR'],
     //   },
     // },
+
+    // Added from old Fundraiser
+    draftId:{
+      type: String,
+      required: true
+    },
+    transactions: [
+      {
+        type: String,
+      },
+    ],
+    status: {
+      type: String,
+      enum: ['pending', 'active', 'failed', 'completed'],
+      required: true,
+      default: 'pending',
+    },
+    approvedComments: {
+      type: String,
+      required: function (this: any) {
+        return this.status === 'failed';
+      },
+    },
+    current_amount: {
+      type: Number,
+      default: 0,
+    },
+    stripeId: {
+      type: String,
+      required: true,
+    },
+    approved: {
+      type: Boolean,
+      default: false,
+    },
+    approvedBy: {
+      type: String,
+    },
+    approvedAt: {
+      type: Date,
+    },
+    date: {
+      type: Date,
+      default: Date.now,
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
   });
   
 
 const Campaign = model<CampaignDocument>('Campaign', campaignSchema);
+//const Campaign = model<CampaignDocument>('Fundraiser', campaignSchema);
 
 export default Campaign;

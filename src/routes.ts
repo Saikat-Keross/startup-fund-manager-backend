@@ -33,6 +33,7 @@ import { postCommentHandler, replyCommentHandler, getAllCommentsHandler } from '
 import { postCampaignHandler } from './controller/Campaign/campaign.controller';
 
 
+
 function routes(app: Express) {
   app.get('/test', (req: Request, res: Response) => {
     res.sendStatus(200);
@@ -60,7 +61,12 @@ function routes(app: Express) {
 
   // File upload route
   app.post('/api/upload', upload.single('file'), handleFileUpload);
-  app.post('/api/uploadMultiple', upload.array('file', 2), handleFileUploads);
+  app.post('/api/uploadMultiple', upload.array('files', 10), handleFileUploads);
+
+  // app.use((err, req, res, next) => {
+  //   console.log('This is the invalid field ->', err.field);
+  //   next(err);
+  // });
   
   app.get('/payment-check',authUserFromCookie, verifyPayment);
 
@@ -81,7 +87,7 @@ function routes(app: Express) {
   app.post('/api/QnA/Reply', replyCommentHandler);
   app.get('/api/QnA', getAllCommentsHandler);
 
-  // campaign detail
+  // campaign
   app.post('/api/Campaign', postCampaignHandler);
 }
 

@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
 
-//const UPLOAD_FOLDER = 'D:\\resources';
-const UPLOAD_FOLDER = path.join(path.dirname(__dirname), 'uploads');
+const UPLOAD_FOLDER = 'D:\\Resources';
+//const UPLOAD_FOLDER = path.join(path.dirname(__dirname), 'uploads');
 
 // Configure multer for file upload
 const storage = multer.diskStorage({
