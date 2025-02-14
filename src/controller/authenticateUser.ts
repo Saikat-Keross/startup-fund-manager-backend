@@ -27,7 +27,7 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
         // Check if the user exists and the password matches
         if (username === user.username && await bcrypt.compare(password, user.password)) {
             // Create a JWT token
-            const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '1h' });
+            const token = jwt.sign({ id: user._id, username: user.username }, secretKey, { expiresIn: '5h' });
             req.user  = user ;
             console.log("user =>",user);
             // Send the token as a cookie
