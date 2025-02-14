@@ -8,7 +8,8 @@ import {
   postFavesHandler,
   updateFundraiserHandler,
   deleteFundraiserHandler,
-  submitForApprovalHandler
+  submitForApprovalHandler,
+  getFundraisersHandlerForDashboard
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
@@ -31,7 +32,11 @@ import { postCommentHandler, replyCommentHandler, getAllCommentsHandler } from '
 
 // campaign
 import { postCampaignHandler } from './controller/Campaign/campaign.controller';
+import getRecomendedCampaignsTypesPreviouslyInvested from './controller/personalizedRecomendation.controller'
 
+import { getLatestTransactions } from './controller/transaction.controller'
+
+import { getLatestCampaigns, getHotCampaigns,willBeClosedCampaigns,raisedMostMoneylastweek } from './controller/campaignTypes.controller'
 
 
 function routes(app: Express) {
@@ -39,9 +44,11 @@ function routes(app: Express) {
     res.sendStatus(200);
   });
 
-  app.post('/api/fundraiser', validate(createFundraiserSchema),authUserFromCookie, createFundraiserHandler);
+  app.post('/api/fundraiser', validate(createFundraiserSchema), authUserFromCookie, createFundraiserHandler);
 
-  app.get('/api/fundraiser', getFundraisersHandler);
+  app.get('/api/fundraiser', authUserFromCookie, getFundraisersHandler);
+
+  app.get('/api/fundraiser/dashboard', authUserFromCookie, getFundraisersHandlerForDashboard);
 
   app.post('/api/fundraiser/submitForApproval', submitForApprovalHandler);
 
@@ -70,17 +77,17 @@ function routes(app: Express) {
   
   app.get('/payment-check',authUserFromCookie, verifyPayment);
 
-  app.post('/api/refund/:campaignid',authUserFromCookie,createCampaignRefund)
+  app.post('/api/refund/:campaignid', authUserFromCookie, createCampaignRefund)
 
 
   app.get('/api/transactions/user/:userId', getTransactionsByUserId);
-  
 
-  app.get('/api/transactions',getAllTransactions)
 
-  app.post('/api/payment/account/:campaignId',createStripeAccount)
+  // app.get('/api/transactions',getAllTransactions)
 
-  app.post('/api/account/onboard',createOnboardingLink)
+  app.post('/api/payment/account/:campaignId', createStripeAccount)
+
+  app.post('/api/account/onboard', createOnboardingLink)
 
   // campaign detail
   app.post('/api/QnA', postCommentHandler);
@@ -89,6 +96,22 @@ function routes(app: Express) {
 
   // campaign
   app.post('/api/Campaign', postCampaignHandler);
+
+  //Get Personalized campaigns recommendations
+  app.get('/api/campaigns/recomendations', authUserFromCookie, getRecomendedCampaignsTypesPreviouslyInvested)
+
+
+  //Get Latest Transactions
+  app.get('/api/transactions', authUserFromCookie, getLatestTransactions)
+
+  //Get Campaigns Types
+  app.get('/api/campaigns/fresh', getLatestCampaigns)
+  app.get('/api/campaigns/hot', getHotCampaigns)
+  app.get('/api/campaigns/closing',willBeClosedCampaigns)
+  app.get('/api/transactions/weeklyMoneyRaised', raisedMostMoneylastweek)
 }
 
 export default routes;
+
+
+///api/campaigns/fresh?page=${page}&limit=${limit}`
