@@ -13,7 +13,7 @@ import {
 } from './controller/fundraiser.controller';
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
-import { upload, handleFileUpload } from './controller/upload.controller';
+import { upload, handleFileUpload, handleFileUploads } from './controller/upload.controller';
 
 //const verifyPayment = require('./controller/verifyPayment.controller');
 
@@ -26,6 +26,12 @@ import getTransactionsByUserId from './controller/getTransaction.controller'
 import getAllTransactions from './controller/allTransactions.controller';
 import { createStripeAccount } from './controller/stripeAccount.controller';
 import createOnboardingLink from './controller/stripeOnboard.controller';
+
+// campaign detail
+import { postCommentHandler, replyCommentHandler, getAllCommentsHandler } from './controller/CampaignDetail/questions_answers.controller';
+
+// campaign
+import { postCampaignHandler } from './controller/Campaign/campaign.controller';
 import getRecomendedCampaignsTypesPreviouslyInvested from './controller/personalizedRecomendation.controller'
 
 import { getLatestTransactions } from './controller/transaction.controller'
@@ -62,8 +68,14 @@ function routes(app: Express) {
 
   // File upload route
   app.post('/api/upload', upload.single('file'), handleFileUpload);
+  app.post('/api/uploadMultiple', upload.array('files', 10), handleFileUploads);
 
-  app.get('/payment-check', authUserFromCookie, verifyPayment);
+  // app.use((err, req, res, next) => {
+  //   console.log('This is the invalid field ->', err.field);
+  //   next(err);
+  // });
+  
+  app.get('/payment-check',authUserFromCookie, verifyPayment);
 
   app.post('/api/refund/:campaignid', authUserFromCookie, createCampaignRefund)
 
@@ -76,6 +88,14 @@ function routes(app: Express) {
   app.post('/api/payment/account/:campaignId', createStripeAccount)
 
   app.post('/api/account/onboard', createOnboardingLink)
+
+  // campaign detail
+  app.post('/api/QnA', postCommentHandler);
+  app.post('/api/QnA/Reply', replyCommentHandler);
+  app.get('/api/QnA', getAllCommentsHandler);
+
+  // campaign
+  app.post('/api/Campaign', postCampaignHandler);
 
   //Get Personalized campaigns recommendations
   app.get('/api/campaigns/recomendations', authUserFromCookie, getRecomendedCampaignsTypesPreviouslyInvested)
