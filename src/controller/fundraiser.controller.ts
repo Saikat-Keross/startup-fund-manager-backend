@@ -106,10 +106,14 @@ export async function getFundraisersHandler(req: Request, res: Response) {
   const userRole = await User.findById(userId).select('role');
   console.log("Role", userRole?.role)
   try {
-    if(!userId) {
+    if(userRole?.role == 'admin') {
       fundraisers = await getFundraisers({});
+    }else{
+      fundraisers = await getFundraisers({"userId": userId});
     }
-    fundraisers = await getFundraisers({"userId": userId});
+   
+
+    console.log("Admin fundraisers",fundraisers)
     return res.send(fundraisers);
   } catch (ex: any) {
     logger.error(ex);

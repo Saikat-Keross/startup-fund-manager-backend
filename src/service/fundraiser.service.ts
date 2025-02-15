@@ -26,14 +26,16 @@ export async function getFundraiserOne(params : any) {
 }
 
 export async function getFundraisers(params : any) {
-
+  let fundraisers = null
   try {
     if (params) {
       console.log("inside if",params);
-      const fundraisers = await Fundraiser.find(params);
-      return fundraisers;
-    } 
-    const fundraisers = await Fundraiser.find();
+      fundraisers = await Fundraiser.find(params);
+      //return fundraisers;
+    }else{
+      fundraisers = await Fundraiser.find();
+    }
+    
     console.log(`Fundraisers fro admin`,fundraisers)
     return fundraisers;
   } catch (ex: any) {

@@ -93,7 +93,7 @@ async function verifyPayment(req, res) {
                 fundraiser.current_amount += transaction.amount/100;
                 fundraiser.transactions.push(transaction.transactionId);
                 await fundraiser.save();
-                res.redirect(`${process.env.CLIENT_ORIGIN}/detailCampaign/${campaign_id}`);
+                res.redirect(`${process.env.CLIENT_ORIGIN}/quantmai/detailCampaign/${campaign_id}`);
                // res.json({fundraiser});
 
                 break;

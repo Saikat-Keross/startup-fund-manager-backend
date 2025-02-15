@@ -77,9 +77,7 @@ export const getHotCampaigns = async (req, res) => {
                     as: 'transactions',
                 }
             },
-
             { $unwind: { path: '$transactions', preserveNullAndEmptyArrays: true } },
-
             {
                 $group: {
                     _id: '$_id',
@@ -101,12 +99,18 @@ export const getHotCampaigns = async (req, res) => {
                     fundingSpeed: {
                         $divide: [
                             { $toDouble: '$totalFunding' },
-                            { $dateDiff: { startDate: '$createdAt', endDate: new Date(), unit: 'hour' } },
+                            {
+                                $cond: {
+                                    if: { $eq: [{ $dateDiff: { startDate: '$createdAt', endDate: new Date(), unit: 'hour' } }, 0] },
+                                    then: 1, // Prevent division by zero
+                                    else: { $dateDiff: { startDate: '$createdAt', endDate: new Date(), unit: 'hour' } }
+                                }
+                            }
                         ]
                     }
                 }
             },
-            { $sort: { fundingSpeed: 1 } },
+            { $sort: { fundingSpeed: -1 } }, // Sorting in descending order for "hot" campaigns
             { $skip: skip },
             { $limit: limit }
         ]);

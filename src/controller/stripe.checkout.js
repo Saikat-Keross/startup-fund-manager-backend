@@ -42,8 +42,8 @@ export const createCheckoutSession = async (req, res) => {
                 },
             },
             mode: 'payment',
-            success_url: `http://192.168.3.7:8000/payment-check?session_id={CHECKOUT_SESSION_ID}&campaign_id=${selectedCampaignId}`,
-            cancel_url: `http://192.168.3.7:8000/payment-check?session_id={CHECKOUT_SESSION_ID}&campaign_id=${selectedCampaignId}`,
+            success_url: `http://192.168.0.108:8000/payment-check?session_id={CHECKOUT_SESSION_ID}&campaign_id=${selectedCampaignId}`,
+            cancel_url: `http://192.168.0.108:8000/payment-check?session_id={CHECKOUT_SESSION_ID}&campaign_id=${selectedCampaignId}`,
         });
 
         //res.redirect(303, session.url);

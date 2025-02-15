@@ -14,6 +14,7 @@ import {
 import { processContributionHandler } from './controller/contribution.controller';
 import { createCheckoutSession } from './controller/stripe.checkout';
 import { upload, handleFileUpload, handleFileUploads } from './controller/upload.controller';
+import path from 'path';
 
 //const verifyPayment = require('./controller/verifyPayment.controller');
 
@@ -109,6 +110,11 @@ function routes(app: Express) {
   app.get('/api/campaigns/hot', getHotCampaigns)
   app.get('/api/campaigns/closing',willBeClosedCampaigns)
   app.get('/api/transactions/weeklyMoneyRaised', raisedMostMoneylastweek)
+
+  app.get('/images/:filename', (req, res) => {
+    const filename = req.params.filename;
+    res.sendFile(path.join('C:\\resources', filename));
+  });
 }
 
 export default routes;
